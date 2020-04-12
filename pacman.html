@@ -3,10 +3,50 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <script language="javascript" src="plateau.js"></script>
+<script language="javascript" src="game.js"></script>
 <style>
-canvas {
+.board {
+    position : absolute;
+    left : 30;
+    top : 30;
+    z-index : 1;
     border: 1px solid #d3d3d3;
     background-color: #f1f1f1;
+}
+.game {
+    position : absolute;
+    left : 30;
+    top : 30;
+    z-index : 2;
+    border: 1px solid #d3d3d3;
+}
+.rotate90 {
+    -webkit-transform : rotate(90deg);
+    -moz-transform : rotate(90deg);
+    -ms-transform : rotate(90deg);
+    -o-transform : rotate(90deg);
+    transform : rotate(90deg);
+}
+.rotate180 {
+    -webkit-transform : rotate(180deg);
+    -moz-transform : rotate(180deg);
+    -ms-transform : rotate(180deg);
+    -o-transform : rotate(180deg);
+    transform : rotate(180deg);
+}
+.rotate270 {
+    -webkit-transform : rotate(270deg);
+    -moz-transform : rotate(270deg);
+    -ms-transform : rotate(270deg);
+    -o-transform : rotate(270deg);
+    transform : rotate(270deg);
+}
+.norotate {
+    -webkit-transform : rotate(0deg);
+    -moz-transform : rotate(0deg);
+    -ms-transform : rotate(0deg);
+    -o-transform : rotate(0deg);
+    transform : rotate(0deg);
 }
 </style>
 </head>
@@ -14,21 +54,28 @@ canvas {
 <script>
 
 function startGame() {
+    myBoardArea.start();
     myGameArea.start();
 }
 
-var myGameArea = {
-    canvas : document.createElement("canvas"),
+var myBoardArea = {
     start : function() {
-        drawGameplay(this.canvas, 0);
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        drawGameplay(board, 0);
     }
 }
 
+var myGameArea = {
+    start : function() {
+        pacManGame.firstPass(game, 0);
+	}
+}
+
+init(0);
+
 </script>
 
-<p>We have created a game area! (or at least an empty canvas)</p>
-
+<h1 align="center">Pac Man</h1>
+<canvas class="game" id="game"></canvas>
+<canvas class="board" id="board"></canvas>
 </body>
 </html>
