@@ -6,8 +6,8 @@ gameplay = [
 		"board" : {
 			"x_size" : 17,
 			"y_size" : 27,
-			"x_length" : 20,
-			"y_length" : 20,
+			"x_length" : 30,
+			"y_length" : 30,
 			"cells" : [
 				"WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL",
 				"CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
