@@ -8,7 +8,7 @@ pacManGame = {
 	"pacman_pos_y" : 0,
 	"pacman_lastPos_x" : 0,
 	"pacman_lastPos_y" : 0,
-	"pacman_move" : 11,
+	"pacman_move" : 2,
 	"pacman_eating" : false,
 	"pacman1_left" : new Image(),
 	"pacman1_right" : new Image(),
@@ -18,8 +18,18 @@ pacManGame = {
 	"pacman2_right" : new Image(),
 	"pacman2_top" : new Image(),
 	"pacman2_bottom" : new Image(),
+	"ghost_pink_1" : new Image(),
+	"ghost_pink_2" : new Image(),
+	"ghost_pink_eye" : false,
+	"ghost_pink_lastPos_x" : 0,
+	"ghost_pink_lastPos_y" : 0,
+	"ghost_pink_move" : 3,
+	"ghost_pink_pos_x" : 0,
+	"ghost_pink_pos_y" : 0,
 	"horizontal_scroll" : 0,
 	"vertical_scroll" : 0,
+	"banner_h_scroll" : 0,
+	"banner_v_scroll" : 0,
 	"pacman_orientation" : "right",
 	"pacman_rotate" : 0,
 	"pacmanCanMove" : true,
@@ -28,7 +38,11 @@ pacManGame = {
 		canvas.height = this.ysize * this.yl;
 		this.canvas = canvas;
 		this.level = level;
+		this.banner = document.getElementById("banner");
+		this.banner.style.width = "100%";
+		this.bravo = document.getElementById("bravo");
 		this.pacmanCurrentImage = this.pacman1_right;
+		this.ghostPinkCurrentImage = this.ghost_pink_1;
 		this.timeout = setInterval(this.play, this.interval);
 		window.addEventListener('keydown', function(e) {
 			if (e.keyCode == 37) {
@@ -49,6 +63,19 @@ pacManGame = {
 			}
 			e.preventDefault();
 		});
+		window.addEventListener('scroll', function(e) {
+			if (pacManGame.banner) {
+				if (window.scrollX < pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34)
+					pacManGame.banner.style.left = window.scrollX + "px";
+				else
+					pacManGame.banner.style.left = (pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34) + "px";
+				pacManGame.banner.style.top = window.scrollY + "px";
+			}
+		});
+		x = this;
+		x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
+		x.vertical_scroll = x.pacman_pos_y - 2 * x.yl;
+		window.scroll(x.horizontal_scroll, x.vertical_scroll);
 	},
 	"pacmanTestMove" : function() {
 		if (x.pacman_orientation == "left") {
@@ -168,7 +195,7 @@ pacManGame = {
 				viewport_x_left = x.horizontal_scroll + screen.availWidth / 3;
 				viewport_x_right = (x.horizontal_scroll + screen.availWidth) * 3/4;
 				if (viewport_x_left > x.pacman_pos_x || viewport_x_right <= x.pacman_pos_x) {
-					x.horizontal_scroll -= x.pacman_move;
+					x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
 				}
 				if (x.pacman_eating)
@@ -188,7 +215,7 @@ pacManGame = {
 				viewport_x_left = x.horizontal_scroll + screen.availWidth / 3;
 				viewport_x_right = (x.horizontal_scroll + screen.availWidth) * 3/4;
 				if (viewport_x_left > x.pacman_pos_x || viewport_x_right <= x.pacman_pos_x) {
-					x.horizontal_scroll += x.pacman_move;
+					x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
 				}
 				if (x.pacman_eating)
@@ -202,14 +229,16 @@ pacManGame = {
 					x.pacman_pos_y = x.canvas.height - x.yl / 2;
 					x.vertical_scroll = x.pacman_pos_y;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
+					x.banner.top = x.vertical_scroll;
 				} else {
 					x.pacman_pos_y -= x.pacman_move;
 				}
 				viewport_y_top = x.vertical_scroll + screen.availHeight / 3;
 				viewport_y_bottom = (x.vertical_scroll + screen.availHeight) * 3/4;
 				if (viewport_y_top > x.pacman_pos_y || viewport_y_bottom <= x.pacman_pos_y) {
-					x.vertical_scroll -= x.pacman_move;
+					x.vertical_scroll = x.pacman_pos_y - 2 * x.yl;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
+					x.banner.top = x.vertical_scroll;
 				}
 				if (x.pacman_eating)
 					x.pacmanCurrentImage = x.pacman2_top;
@@ -222,14 +251,16 @@ pacManGame = {
 					x.pacman_pos_y = 0;
 					x.vertical_scroll = 0;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
+					x.banner.top = x.vertical_scroll;
 				} else {
 					x.pacman_pos_y += x.pacman_move;
 				}
 				viewport_y_top = x.vertical_scroll + screen.availHeight / 3;
 				viewport_y_bottom = (x.vertical_scroll + screen.availHeight) * 3/4;
 				if (viewport_y_top > x.pacman_pos_y || viewport_y_bottom <= x.pacman_pos_y) {
-					x.vertical_scroll += x.pacman_move;
+					x.vertical_scroll = x.pacman_pos_y - 2 * x.yl;
 					window.scroll(x.horizontal_scroll, x.vertical_scroll);
+					x.banner.top = x.vertical_scroll;
 				}
 				if (x.pacman_eating)
 					x.pacmanCurrentImage = x.pacman2_bottom;
@@ -237,10 +268,29 @@ pacManGame = {
 					x.pacmanCurrentImage = x.pacman1_bottom;
 			}
 		}
+		if (x.ghost_pink_eye)
+			x.ghostPinkCurrentImage = x.ghost_pink_2;
+		else
+			x.ghostPinkCurrentImage = x.ghost_pink_1;
 	},
 	"pacmanDraw" : function() {
+		ctx.clearRect(x.ghost_pink_lastPos_x + x.xl / 8 - x.ghost_pink_move, x.ghost_pink_lastPos_y + x.yl / 8 - x.ghost_pink_move, x.xl / 1.3 + x.ghost_pink_move * 2, x.yl / 1.3 + x.ghost_pink_move * 2);
 		ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
 		ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+		ctx.drawImage(x.ghostPinkCurrentImage, x.ghost_pink_pos_x + x.xl / 8, x.ghost_pink_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+		if (x.cells[x.xcell + x.ycell * x.xsize] == "CAKE") {
+			x.cells[x.xcell + x.ycell * x.xsize] = "EMPTY";
+			drawGameplay(board, x.level);
+			pacManGame.banner.childNodes[0].innerText = gameplay[pacManGame.level].cakeCounter;
+			if (gameplay[pacManGame.level].cakeCounter == 0) {
+				clearInterval(pacManGame.timeout);
+				pacManGame.bravo.style.left = window.scrollX + "px";
+				pacManGame.bravo.style.width = screen.availWidth + "px";
+				pacManGame.bravo.style.height = screen.availHeight + "px";
+				pacManGame.bravo.style.top = window.scrollY + "px";
+				pacManGame.bravo.style.display = "inline";
+			}
+		}
 	},
 	"play" : function() {
 		x = pacManGame;
@@ -272,6 +322,7 @@ pacManGame = {
 				break;
 			case 40:
 				x.pacman_eating = true;
+				x.ghost_pink_eye = true;
 				break;
 			case 41:
 				x.pacmanDraw();
@@ -305,6 +356,7 @@ pacManGame = {
 				break;
 			case 90:
 				x.pacman_eating = false;
+				x.ghost_pink_eye = false;
 				break;
 			case 92:
 				//x.vertical_scroll += 10;
@@ -327,12 +379,15 @@ function init(level) {
 	pacManGame.pacman2_top.src = "pacman2_top.png";
 	pacManGame.pacman1_bottom.src = "pacman1_bottom.png";
 	pacManGame.pacman2_bottom.src = "pacman2_bottom.png";
+	pacManGame.ghost_pink_1.src = "ghost1.png";
+	pacManGame.ghost_pink_2.src = "ghost2.png";
 	pacManGame.xsize = gameplay[level].board.x_size;
 	pacManGame.ysize = gameplay[level].board.y_size;
 	pacManGame.xl = gameplay[level].board.x_length;
 	pacManGame.yl = gameplay[level].board.y_length;
 	pacManGame.cells = gameplay[level].board.cells;
-	pacManGame.pacman_pos_x = 3 * pacManGame.xl;
-	pacManGame.pacman_pos_y = 0;
+	pacManGame.pacman_pos_x = 6 * pacManGame.xl;
+	pacManGame.pacman_pos_y = 7 * pacManGame.yl;
+	pacManGame.ghost_pink_pos_x = 1 * pacManGame.xl;
 }
 

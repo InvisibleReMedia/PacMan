@@ -7,46 +7,38 @@
 <style>
 .board {
     position : absolute;
-    left : 30;
-    top : 30;
+    left : 30px;
+    top : 30px;
     z-index : 1;
     border: 1px solid #d3d3d3;
     background-color: #f1f1f1;
 }
 .game {
     position : absolute;
-    left : 30;
-    top : 30;
+    left : 30px;
+    top : 30px;
     z-index : 2;
     border: 1px solid #d3d3d3;
 }
-.rotate90 {
-    -webkit-transform : rotate(90deg);
-    -moz-transform : rotate(90deg);
-    -ms-transform : rotate(90deg);
-    -o-transform : rotate(90deg);
-    transform : rotate(90deg);
+.banner {
+    position : absolute;
+    left : 30px;
+    top : 30px;
+    z-index : 3;
+    border : 1px solid #d3d3d3;
+    background-color : #00f2f1;
+    opacity : 0.4;
 }
-.rotate180 {
-    -webkit-transform : rotate(180deg);
-    -moz-transform : rotate(180deg);
-    -ms-transform : rotate(180deg);
-    -o-transform : rotate(180deg);
-    transform : rotate(180deg);
+.score {
+    font-size : 70px;
+    color : red;
 }
-.rotate270 {
-    -webkit-transform : rotate(270deg);
-    -moz-transform : rotate(270deg);
-    -ms-transform : rotate(270deg);
-    -o-transform : rotate(270deg);
-    transform : rotate(270deg);
-}
-.norotate {
-    -webkit-transform : rotate(0deg);
-    -moz-transform : rotate(0deg);
-    -ms-transform : rotate(0deg);
-    -o-transform : rotate(0deg);
-    transform : rotate(0deg);
+
+.bravo {
+    position:absolute;
+    align:center;
+    valign:middle;
+    z-index:4;
 }
 </style>
 </head>
@@ -74,8 +66,10 @@ init(0);
 
 </script>
 
-<h1 align="center">Pac Man</h1>
+<div class="banner" id="banner"><p align="right" class="score" id="counter" style="font-size:40px">0</p><p align="right" class="score" id="score">0</p>
+</div>
 <canvas class="game" id="game"></canvas>
 <canvas class="board" id="board"></canvas>
+<img src="bravo.gif" class="bravo" id="bravo" style="display:none"/>
 </body>
 </html>

@@ -3,11 +3,12 @@
 gameplay = [
 	{
 		"level" : 1,
+		"cakeCounter" : 0,
 		"board" : {
 			"x_size" : 17,
 			"y_size" : 27,
-			"x_length" : 30,
-			"y_length" : 30,
+			"x_length" : 20,
+			"y_length" : 20,
 			"cells" : [
 				"WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL",
 				"CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
@@ -51,6 +52,7 @@ function drawGameplay(canvas, level) {
 	canvas.width = xsize * xl;
 	canvas.height = ysize * yl;
 
+	gameplay[level].cakeCounter = 0;
 	ctx = canvas.getContext("2d");
 	for(y = 0; y < ysize; ++y) {
 		for(x = 0; x < xsize; ++x) {
@@ -59,6 +61,7 @@ function drawGameplay(canvas, level) {
 				ctx.fillStyle = "#222222FF";
 				ctx.fillRect(x*xl + 2, y*yl + 2, xl - 5, yl - 5);
 			} else if (c == "CAKE") {
+				++gameplay[level].cakeCounter;
 				ctx.beginPath();
 				ctx.fillStyle = "#CCCCCCFF";
 				ctx.fillRect(x*xl + 2, y*yl + 2, xl - 5, yl - 5);
