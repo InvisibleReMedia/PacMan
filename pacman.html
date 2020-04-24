@@ -28,12 +28,12 @@
     border : 1px solid #d3d3d3;
     background-color : #f1f2f1;
     opacity : 0.7;
-    background-image: url("pacman_title.png");
-    background-size : 100% 100%;
 }
-.score {
-    font-size : 40px;
-    font-familly : Arial;
+.counter {
+    position : relative;
+    top : 10px;
+    left : -10px;
+    font-size : 10pt;
     color : red;
 }
 
@@ -69,7 +69,7 @@ init(0);
 
 </script>
 
-<div class="banner" id="banner"><div align="right" class="score" id="counter" style="font-size:25px">0</div><br><div align="right" class="score" id="score">0</div>
+<div class="banner" id="banner"><img style="float:left" src="PACMAN_TITLE.png" height="93px"/><div align="right" class="counter" id="counter">0</div><br><div align="right" id="score">0</div>
 </div>
 <canvas class="game" id="game"></canvas>
 <canvas class="board" id="board"></canvas>

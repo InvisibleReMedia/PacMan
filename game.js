@@ -23,45 +23,61 @@ pacManGame = {
 		{
 			"ghost_1" : new Image(),
 			"ghost_2" : new Image(),
+			"color" : "purple",
 			"ghost_eye" : false,
 			"ghost_lastPos_x" : 0,
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 3,
 			"ghost_pos_y" : 3,
 			"ghost_move" : 7,
+			"ghost_destination_x" : 10,
+			"ghost_destination_y" : 10,
+			"ghost_direction_change" : "none",
 			"ghost_orientation" : "right"
 		},
 		{
 			"ghost_1" : new Image(),
 			"ghost_2" : new Image(),
+			"color" : "red",
 			"ghost_eye" : false,
 			"ghost_lastPos_x" : 0,
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
 			"ghost_pos_y" : 0,
 			"ghost_move" : 7,
+			"ghost_destination_x" : 10,
+			"ghost_destination_y" : 10,
+			"ghost_direction_change" : "none",
 			"ghost_orientation" : "right"
 		},
 		{
 			"ghost_1" : new Image(),
 			"ghost_2" : new Image(),
+			"color" : "green",
 			"ghost_eye" : false,
 			"ghost_lastPos_x" : 0,
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
 			"ghost_pos_y" : 20,
 			"ghost_move" : 3,
+			"ghost_destination_x" : 10,
+			"ghost_destination_y" : 10,
+			"ghost_direction_change" : "none",
 			"ghost_orientation" : "right"
 		},
 		{
 			"ghost_1" : new Image(),
 			"ghost_2" : new Image(),
+			"color" : "blue",
 			"ghost_eye" : false,
 			"ghost_lastPos_x" : 0,
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 5,
 			"ghost_pos_y" : 9,
 			"ghost_move" : 3,
+			"ghost_destination_x" : 0,
+			"ghost_destination_y" : 0,
+			"ghost_direction_change" : "none",
 			"ghost_orientation" : "right"
 		}
 	],
@@ -223,8 +239,99 @@ pacManGame = {
 	},
 	"ghostTestMove" : function() {
 		for(u = 0; u < x.ghosts.length; ++u) {
-			ghostCanMove = true;
 			++x.ghosts[u].ghost_move_count;
+			if (x.ghosts[u].ghost_move_count >= 5) {
+				x.ghosts[u].ghost_move_count = 0;
+				dest_x = x.ghosts[u].ghost_destination_x - x.ghosts[u].ghost_pos_x;
+				dest_y = x.ghosts[u].ghost_destination_y - x.ghosts[u].ghost_pos_y;
+				if (Math.abs(dest_x) <= 1 && Math.abs(dest_y) <= 1) {
+					ghostCanMove = false;
+					x.ghosts[u].ghost_destination_x = Math.random() * x.xsize;
+					x.ghosts[u].ghost_destination_y = Math.random() * x.ysize;
+					dest_x = x.ghosts[u].ghost_destination_x - x.ghosts[u].ghost_pos_x;
+					dest_y = x.ghosts[u].ghost_destination_y - x.ghosts[u].ghost_pos_y;
+				}
+				canMove = [];
+				canMoveCount = 0;
+				if (x.ghosts[u].xcell == 0)
+					nextXCell = x.xsize - 1;
+				else
+					nextXCell = x.ghosts[u].xcell - 1;
+				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
+					canMove[canMoveCount] = "left";
+					++canMoveCount;
+				}
+				if (x.ghosts[u].xcell == x.xsize - 1)
+					nextXCell = 0;
+				else
+					nextXCell = x.ghosts[u].xcell + 1;
+				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
+					canMove[canMoveCount] = "right";
+					++canMoveCount;
+				}
+				if (x.ghosts[u].ycell == 0)
+					nextYCell = x.ysize - 1;
+				else
+					nextYCell = x.ghosts[u].ycell - 1;
+				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
+					canMove[canMoveCount] = "top";
+					++canMoveCount;
+				}
+				if (x.ghosts[u].ycell == x.ysize - 1)
+					nextYCell = 0;
+				else
+					nextYCell = x.ghosts[u].ycell + 1;
+				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
+					canMove[canMoveCount] = "bottom";
+					++canMoveCount;
+				}
+				ang = (Math.atan(dest_y / dest_x) * 180) / Math.PI;
+				if (ang >= 0 && ang < 90) {
+					dirx = "right";
+					diry = "top";
+				} else if (ang <= 0 && ang > -90) {
+					dirx = "left";
+					diry = "top";
+				} else if (ang >= 90) {
+					dirx = "right";
+					diry = "bottom";
+				} else if (ang <= -90) {
+					dirx = "left";
+					diry = "bottom";
+				}
+				seldir = "none";
+				if (x.ghosts[u].ghost_direction_change == "vertical" || x.ghosts[u].ghost_direction_change == "none") {
+					x.ghosts[u].ghost_direction_change = "horizontal";
+					for(g = 0; g < canMoveCount; ++g) {
+						if (canMove[g] == dirx) {
+							seldir = dirx;
+						}
+					}
+				}
+				if (seldir == "none") {
+					x.ghosts[u].ghost_direction_change = "vertical";
+					for(g = 0; g < canMoveCount; ++g) {
+						if (canMove[g] == diry) {
+							seldir = diry;
+						}
+					}
+				}
+				if (seldir == "none") {
+					k = Math.floor(Math.random() * 20) + 10;
+					for(;k >= 0; --k) {
+						m = Math.floor(Math.random() * canMoveCount);
+						n = Math.floor(Math.random() * canMoveCount);
+						temp = canMove[n];
+						canMove[n] = canMove[m];
+						canMove[m] = temp;
+					}
+					r = Math.floor(Math.random() * canMoveCount);
+					x.ghosts[u].ghost_orientation = canMove[r];
+				} else {
+					x.ghosts[u].ghost_orientation = seldir;
+				}
+			}
+
 			x.ghosts[u].ghost_lastPos_x = x.ghosts[u].ghost_pos_x;
 			x.ghosts[u].ghost_lastPos_y = x.ghosts[u].ghost_pos_y;
 			if (x.ghosts[u].ghost_orientation == "left") {
@@ -315,52 +422,6 @@ pacManGame = {
 					x.ghosts[u].ghost_pos_y = x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl;
 					ghostCanMove = false;
 				}
-			}
-			if (!ghostCanMove || x.ghosts[u].ghost_move_count > 100) {
-				canMove = [];
-				canMoveCount = 0;
-				if (x.ghosts[u].xcell == 0)
-					nextXCell = x.xsize - 1;
-				else
-					nextXCell = x.ghosts[u].xcell - 1;
-				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "left";
-					++canMoveCount;
-				}
-				if (x.ghosts[u].xcell == x.xsize - 1)
-					nextXCell = 0;
-				else
-					nextXCell = x.ghosts[u].xcell + 1;
-				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "right";
-					++canMoveCount;
-				}
-				if (x.ghosts[u].ycell == 0)
-					nextYCell = x.ysize - 1;
-				else
-					nextYCell = x.ghosts[u].ycell - 1;
-				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "top";
-					++canMoveCount;
-				}
-				if (x.ghosts[u].ycell == x.ysize - 1)
-					nextYCell = 0;
-				else
-					nextYCell = x.ghosts[u].ycell + 1;
-				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "bottom";
-					++canMoveCount;
-				}
-				k = Math.floor(Math.random() * 20) + 10;
-				for(;k >= 0; --k) {
-					m = Math.floor(Math.random() * canMoveCount);
-					n = Math.floor(Math.random() * canMoveCount);
-					temp = canMove[n];
-					canMove[n] = canMove[m];
-					canMove[m] = temp;
-				}
-				r = Math.floor(Math.random() * canMoveCount);
-				x.ghosts[u].ghost_orientation = canMove[r];
 			}
 		}
 	},
@@ -512,9 +573,9 @@ pacManGame = {
 		if (x.cells[x.xcell + x.ycell * x.xsize] == "CAKE") {
 			x.cells[x.xcell + x.ycell * x.xsize] = "EMPTY";
 			drawGameplay(board, x.level);
-			pacManGame.banner.childNodes[0].innerText = gameplay[pacManGame.level].cakeCounter;
+			pacManGame.banner.childNodes[1].innerText = gameplay[pacManGame.level].cakeCounter;
 			++pacManGame.score;
-			pacManGame.banner.childNodes[2].innerText = pacManGame.score * 100;
+			numbers(pacManGame.score * 100);
 			if (gameplay[pacManGame.level].cakeCounter == 0) {
 				clearInterval(pacManGame.timeout);
 				pacManGame.bravo.style.left = window.scrollX + "px";
@@ -528,6 +589,8 @@ pacManGame = {
 	"ghostDraw" : function() {
 		for(u = 0; u < x.ghosts.length; ++u) {
 			ctx.clearRect(x.ghosts[u].ghost_lastPos_x + x.xl / 8 - x.ghosts[u].ghost_move, x.ghosts[u].ghost_lastPos_y + x.yl / 8 - x.ghosts[u].ghost_move, x.xl / 1.3 + x.ghosts[u].ghost_move * 2, x.yl / 1.3 + x.ghosts[u].ghost_move * 2);
+		}
+		for(u = 0; u < x.ghosts.length; ++u) {
 			ctx.drawImage(x.ghosts[u].ghostCurrentImage, x.ghosts[u].ghost_pos_x + x.xl / 8, x.ghosts[u].ghost_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
 		}
 	},
@@ -673,10 +736,24 @@ function init(level) {
 	pacManGame.pacman_pos_y = 7 * pacManGame.yl;
 
 	for(u = 0; u < pacManGame.ghosts.length; ++u) {
-		pacManGame.ghosts[u].ghost_1.src = "ghost1.png";
-		pacManGame.ghosts[u].ghost_2.src = "ghost2.png";
+		pacManGame.ghosts[u].ghost_1.src = "ghost_" + pacManGame.ghosts[u].color + "_1.png";
+		pacManGame.ghosts[u].ghost_2.src = "ghost_" + pacManGame.ghosts[u].color + "_2.png";
 		pacManGame.ghosts[u].ghost_pos_x = pacManGame.ghosts[u].ghost_pos_x * pacManGame.xl;
 		pacManGame.ghosts[u].ghost_pos_y = pacManGame.ghosts[u].ghost_pos_y * pacManGame.yl;
 	}
 }
 
+function numbers(n) {
+	z = document.getElementById("score");
+	h = "";
+	k = n;
+	t = Math.log10(n) + 1;
+	while(t > 0) {
+		m = k % 10;
+		if (t == 1 && m > 0 || t > 1)
+			h = "<img src='n_" + m + ".png'/>" + h;
+		k = (k - k % 10) / 10;
+		--t;
+	}
+	z.innerHTML = h;
+}
