@@ -285,38 +285,35 @@ pacManGame = {
 					canMove[canMoveCount] = "bottom";
 					++canMoveCount;
 				}
-				ang = (Math.atan(dest_y / dest_x) * 180) / Math.PI;
-				if (ang >= 0 && ang < 90) {
-					dirx = "right";
-					diry = "top";
-				} else if (ang <= 0 && ang > -90) {
-					dirx = "left";
-					diry = "top";
-				} else if (ang >= 90) {
-					dirx = "right";
-					diry = "bottom";
-				} else if (ang <= -90) {
-					dirx = "left";
-					diry = "bottom";
+				if (dest_x >= dest_y) {
+					if (dest_x > 0)
+						seldir = "left";
+					else if (dest_x < 0)
+						seldir = "right";
+					else if (dest_y > 0)
+						seldir = "top";
+					else if (dest_y < 0)
+						seldir = "bottom";
+					else
+						seldir = "none";
+				} else {
+					if (dest_y > 0)
+						seldir = "top";
+					else if (dest_y < 0)
+						seldir = "bottom";
+					else if (dest_x > 0)
+						seldir = "left";
+					else if (dest_x < 0)
+						seldir = "right";
+					else
+						seldir = "none";
 				}
-				seldir = "none";
-				if (x.ghosts[u].ghost_direction_change == "vertical" || x.ghosts[u].ghost_direction_change == "none") {
-					x.ghosts[u].ghost_direction_change = "horizontal";
-					for(g = 0; g < canMoveCount; ++g) {
-						if (canMove[g] == dirx) {
-							seldir = dirx;
-						}
-					}
+				dirok = false;
+				for(g = 0; g > canMoveCount; ++g) {
+					if (seldir == canMove[g])
+						dirok = true;
 				}
-				if (seldir == "none") {
-					x.ghosts[u].ghost_direction_change = "vertical";
-					for(g = 0; g < canMoveCount; ++g) {
-						if (canMove[g] == diry) {
-							seldir = diry;
-						}
-					}
-				}
-				if (seldir == "none") {
+				if (!dirok) {
 					k = Math.floor(Math.random() * 20) + 10;
 					for(;k >= 0; --k) {
 						m = Math.floor(Math.random() * canMoveCount);
