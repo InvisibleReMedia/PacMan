@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script language="javascript" src="ghostMove.js"></script>
+<style>
+.board {
+    position : absolute;
+    left : 30px;
+    top : 30px;
+    z-index : 1;
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+function startGame() {
+    myBoardArea.start();
+}
+
+var myBoardArea = {
+    start : function() {
+        play(board);
+    }
+}
+
+init();
+</script>
+
+<canvas class="board" id="board"></canvas>
+</body>
+</html>
