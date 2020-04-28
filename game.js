@@ -1,5 +1,79 @@
 /* @copyright 2020 */
 
+function Lee(ghost) {
+	// 0 : SUD, 1 : NORD, 2 : OUEST, 3 : EST
+	ghost.mesh = new Array(x.xsize).fill(0).map(x => new Array(x.ysize).fill(0));
+
+	for(y = 0; y < x.ysize; ++y) {
+		for(p = 0; p < x.xsize; ++p) {
+			if (x.cells[p][y] != "WALL") {
+				ghost.mesh[p][y] = 0;
+			}
+		}
+	}
+	dest_x = ghost.ghost_destination_x;
+	dest_y = ghost.ghost_destination_y;
+	pos_x = (ghost.ghost_pos_x - ghost.ghost_pos_x % x.xl) / x.xl;
+	pos_y = (ghost.ghost_pos_y - ghost.ghost_pos_y % x.yl) / x.yl;
+	ghost.mesh[dest_x][dest_y] = 1;
+	ghost.stack = [];
+	ghost.stack_length = 0;
+	ghost.stack[ghost.stack_length] = dest_x + dest_y * x.ysize * x.xsize;
+	++ghost.stack_length;
+	ghost.stack_position = 0;
+	while(ghost.stack_position < ghost.stack_length) {
+		c = ghost.stack[ghost.stack_position];
+		++ghost.stack_position;
+		z = c % (x.ysize * x.xsize);
+		y = (c - z) / (x.ysize * x.xsize);
+
+		// test si position ghost atteinte
+		//if (z == pos_x && y == pos_y)
+			//break;
+		k = ghost.mesh[z][y];
+		// SUD
+		t = y + 1;
+		if (t < x.ysize && x.cells[z + t * x.xsize] != "WALL") {
+			s = ghost.mesh[z][t];
+			if (s == 0) {
+				ghost.mesh[z][t] = k + 1;
+				ghost.stack[ghost.stack_length] = z + t * x.ysize * x.xsize;
+				++ghost.stack_length;
+			}
+		}
+		t = y - 1;
+		// NORD
+		if (t >= 0 && x.cells[z + t * x.xsize] != "WALL") {
+			s = ghost.mesh[z][t];
+			if (s == 0) {
+				ghost.mesh[z][t] = k + 1;
+				ghost.stack[ghost.stack_length] = z + t * x.ysize * x.xsize;
+				++ghost.stack_length;
+			}
+		}
+		// EST
+		t = z + 1;
+		if (t < x.xsize && x.cells[t + y * x.xsize] != "WALL") {
+			s = ghost.mesh[t][y];
+			if (s == 0) {
+				ghost.mesh[t][y] = k + 1;
+				ghost.stack[ghost.stack_length] = t + y * x.ysize * x.xsize;
+				++ghost.stack_length;
+			}
+		}
+		// OUEST
+		t = z - 1;
+		if (t >= 0 && x.cells[t + y * x.xsize] != "WALL") {
+			s = ghost.mesh[t][y];
+			if (s == 0) {
+				ghost.mesh[t][y] = k + 1;
+				ghost.stack[ghost.stack_length] = t + y * x.ysize * x.xsize;
+				++ghost.stack_length;
+			}
+		}
+	}
+}
+
 pacManGame = {
 	"state" : 0,
 	"score" : 0,
@@ -29,11 +103,15 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 3,
 			"ghost_pos_y" : 3,
-			"ghost_move" : 7,
-			"ghost_destination_x" : 10,
-			"ghost_destination_y" : 10,
+			"ghost_move" : 3,
+			"ghost_destination_x" : 3,
+			"ghost_destination_y" : 3,
 			"ghost_direction_change" : "none",
-			"ghost_orientation" : "right"
+			"ghost_orientation" : "right",
+			"stack" : [],
+			"stack_length" : 0,
+			"stack_position" : 0,
+			"action_area" : 5
 		},
 		{
 			"ghost_1" : new Image(),
@@ -44,11 +122,15 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
 			"ghost_pos_y" : 0,
-			"ghost_move" : 7,
-			"ghost_destination_x" : 10,
-			"ghost_destination_y" : 10,
+			"ghost_move" : 3,
+			"ghost_destination_x" : 7,
+			"ghost_destination_y" : 0,
 			"ghost_direction_change" : "none",
-			"ghost_orientation" : "right"
+			"ghost_orientation" : "right",
+			"stack" : [],
+			"stack_length" : 0,
+			"stack_position" : 0,
+			"action_area" : 5
 		},
 		{
 			"ghost_1" : new Image(),
@@ -58,12 +140,16 @@ pacManGame = {
 			"ghost_lastPos_x" : 0,
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
-			"ghost_pos_y" : 20,
+			"ghost_pos_y" : 19,
 			"ghost_move" : 3,
-			"ghost_destination_x" : 10,
-			"ghost_destination_y" : 10,
+			"ghost_destination_x" : 7,
+			"ghost_destination_y" : 19,
 			"ghost_direction_change" : "none",
-			"ghost_orientation" : "right"
+			"ghost_orientation" : "right",
+			"stack" : [],
+			"stack_length" : 0,
+			"stack_position" : 0,
+			"action_area" : 10
 		},
 		{
 			"ghost_1" : new Image(),
@@ -75,10 +161,14 @@ pacManGame = {
 			"ghost_pos_x" : 5,
 			"ghost_pos_y" : 9,
 			"ghost_move" : 3,
-			"ghost_destination_x" : 0,
-			"ghost_destination_y" : 0,
+			"ghost_destination_x" : 5,
+			"ghost_destination_y" : 9,
 			"ghost_direction_change" : "none",
-			"ghost_orientation" : "right"
+			"ghost_orientation" : "right",
+			"stack" : [],
+			"stack_length" : 0,
+			"stack_position" : 0,
+			"action_area" : 10
 		}
 	],
 	"horizontal_scroll" : 0,
@@ -239,106 +329,91 @@ pacManGame = {
 	},
 	"ghostTestMove" : function() {
 		for(u = 0; u < x.ghosts.length; ++u) {
-			++x.ghosts[u].ghost_move_count;
-			if (x.ghosts[u].ghost_move_count >= 5) {
-				x.ghosts[u].ghost_move_count = 0;
-				dest_x = x.ghosts[u].ghost_destination_x - x.ghosts[u].ghost_pos_x;
-				dest_y = x.ghosts[u].ghost_destination_y - x.ghosts[u].ghost_pos_y;
-				if (Math.abs(dest_x) <= 1 && Math.abs(dest_y) <= 1) {
-					ghostCanMove = false;
-					x.ghosts[u].ghost_destination_x = Math.random() * x.xsize;
-					x.ghosts[u].ghost_destination_y = Math.random() * x.ysize;
-					dest_x = x.ghosts[u].ghost_destination_x - x.ghosts[u].ghost_pos_x;
-					dest_y = x.ghosts[u].ghost_destination_y - x.ghosts[u].ghost_pos_y;
+
+			dest_x = x.ghosts[u].ghost_destination_x;
+			dest_y = x.ghosts[u].ghost_destination_y;
+			pos_x = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
+			pos_y = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
+			if (pos_x == dest_x && pos_y == dest_y) {
+				pacman_x = (x.pacman_pos_x - x.pacman_pos_x % x.xl) / x.xl;
+				pacman_y = (x.pacman_pos_y - x.pacman_pos_y % x.yl) / x.yl;
+				if (Math.abs(pos_x - pacman_x) <= x.ghosts[u].action_area && Math.abs(pos_y - pacman_y) <= x.ghosts[u].action_area) {
+					x.ghosts[u].ghost_destination_x = pacman_x;
+					x.ghosts[u].ghost_destination_y = pacman_y;
 				}
-				canMove = [];
-				canMoveCount = 0;
-				if (x.ghosts[u].xcell == 0)
-					nextXCell = x.xsize - 1;
-				else
-					nextXCell = x.ghosts[u].xcell - 1;
-				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "left";
-					++canMoveCount;
+				else {
+					do {
+						ang = Math.floor(Math.random() * 360);
+						dx = Math.floor(x.ghosts[u].action_area * Math.cos(ang * Math.PI / 180)) + 1;
+						dy = Math.floor(x.ghosts[u].action_area * Math.sin(ang * Math.PI / 180)) + 1;
+						x.ghosts[u].ghost_destination_x = pos_x + dx;
+						x.ghosts[u].ghost_destination_y = pos_y + dy;
+						if (x.ghosts[u].ghost_destination_x < 0) {
+							x.ghosts[u].ghost_destination_x = 0;
+						} else if (x.ghosts[u].ghost_destination_x >= x.xsize) {
+							x.ghosts[u].ghost_destination_x = x.xsize - 1;
+						}
+						if (x.ghosts[u].ghost_destination_y < 0) {
+							x.ghosts[u].ghost_destination_y = 0;
+						} else if (x.ghosts[u].ghost_destination_y >= x.ysize) {
+							x.ghosts[u].ghost_destination_y = x.ysize - 1;
+						}
+					} while(x.cells[x.ghosts[u].ghost_destination_x + x.ghosts[u].ghost_destination_y * x.xsize] == "WALL");
 				}
-				if (x.ghosts[u].xcell == x.xsize - 1)
-					nextXCell = 0;
-				else
-					nextXCell = x.ghosts[u].xcell + 1;
-				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "right";
-					++canMoveCount;
-				}
-				if (x.ghosts[u].ycell == 0)
-					nextYCell = x.ysize - 1;
-				else
-					nextYCell = x.ghosts[u].ycell - 1;
-				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "top";
-					++canMoveCount;
-				}
-				if (x.ghosts[u].ycell == x.ysize - 1)
-					nextYCell = 0;
-				else
-					nextYCell = x.ghosts[u].ycell + 1;
-				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] != "WALL") {
-					canMove[canMoveCount] = "bottom";
-					++canMoveCount;
-				}
-				if (dest_x >= dest_y) {
-					if (dest_x > 0)
-						seldir = "left";
-					else if (dest_x < 0)
-						seldir = "right";
-					else if (dest_y > 0)
-						seldir = "top";
-					else if (dest_y < 0)
-						seldir = "bottom";
-					else
-						seldir = "none";
-				} else {
-					if (dest_y > 0)
-						seldir = "top";
-					else if (dest_y < 0)
-						seldir = "bottom";
-					else if (dest_x > 0)
-						seldir = "left";
-					else if (dest_x < 0)
-						seldir = "right";
-					else
-						seldir = "none";
-				}
-				dirok = false;
-				for(g = 0; g > canMoveCount; ++g) {
-					if (seldir == canMove[g])
-						dirok = true;
-				}
-				if (!dirok) {
-					k = Math.floor(Math.random() * 20) + 10;
-					for(;k >= 0; --k) {
-						m = Math.floor(Math.random() * canMoveCount);
-						n = Math.floor(Math.random() * canMoveCount);
-						temp = canMove[n];
-						canMove[n] = canMove[m];
-						canMove[m] = temp;
-					}
-					r = Math.floor(Math.random() * canMoveCount);
-					x.ghosts[u].ghost_orientation = canMove[r];
-				} else {
-					x.ghosts[u].ghost_orientation = seldir;
-				}
+				Lee(x.ghosts[u]);
 			}
 
 			x.ghosts[u].ghost_lastPos_x = x.ghosts[u].ghost_pos_x;
 			x.ghosts[u].ghost_lastPos_y = x.ghosts[u].ghost_pos_y;
+
+			d = x.ghosts[u].mesh[pos_x][pos_y];
+			dir = "none";
+			// SUD
+			t = pos_y + 1;
+			if (t < x.ysize && x.cells[pos_x + t * x.xsize] != "WALL") {
+				s = x.ghosts[u].mesh[pos_x][t];
+				if (d > s) { d = s; dir = "sud"; }
+			}
+			// NORD
+			t = pos_y - 1;
+			if (t >= 0 && x.cells[pos_x + t * x.xsize] != "WALL") {
+				s = x.ghosts[u].mesh[pos_x][t];
+				if (d > s) { d = s; dir = "nord"; }
+			}
+			// EST
+			t = pos_x + 1;
+			if (t < x.xsize && x.cells[t + pos_y * x.xsize] != "WALL") {
+				s = x.ghosts[u].mesh[t][pos_y];
+				if (d > s) { d = s; dir = "est"; }
+			}
+			// OUEST
+			t = pos_x - 1;
+			if (t >= 0 && x.cells[t + pos_y * x.xsize] != "WALL") {
+				s = x.ghosts[u].mesh[t][pos_y];
+				if (d > s) { d = s; dir = "ouest"; }
+			}
+
+			if (dir == "sud") {
+				x.ghosts[u].ghost_orientation = "bottom";
+				x.ghosts[u].ghostCanMove = true;
+			}
+			else if (dir == "nord") {
+				x.ghosts[u].ghost_orientation = "top";
+				x.ghosts[u].ghostCanMove = true;
+			}
+			else if (dir == "est") {
+				x.ghosts[u].ghost_orientation = "right";
+				x.ghosts[u].ghostCanMove = true;
+			}
+			else if (dir == "ouest") {
+				x.ghosts[u].ghost_orientation = "left";
+				x.ghosts[u].ghostCanMove = true;
+			}
+			
+
 			if (x.ghosts[u].ghost_orientation == "left") {
 				if (x.ghosts[u].ghost_old_orientation != x.ghosts[u].ghost_orientation) {
-					x.ghosts[u].ghost_move_count = 0;
-					if (x.ghosts[u].ghost_pos_y % x.yl <= x.yl / 2) {
-						x.ghosts[u].ghost_pos_y -= x.ghosts[u].ghost_pos_y % x.yl;
-					} else {
-						x.ghosts[u].ghost_pos_y += x.yl - x.ghosts[u].ghost_pos_y % x.yl;
-					}
+					x.ghosts[u].ghost_pos_y -= x.ghosts[u].ghost_pos_y % x.yl;
 					x.ghosts[u].ycell = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
 					x.ghosts[u].ghost_old_orientation = x.ghosts[u].ghost_orientation;
 				}
@@ -351,16 +426,11 @@ pacManGame = {
 					nextXCell = x.ghosts[u].xcell - 1;
 				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] == "WALL") {
 					x.ghosts[u].ghost_pos_x = x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl;
-					ghostCanMove = false;
+					x.ghosts[u].ghostCanMove = false;
 				}
 			} else if (x.ghosts[u].ghost_orientation == "right") {
 				if (x.ghosts[u].ghost_old_orientation != x.ghosts[u].ghost_orientation) {
-					x.ghosts[u].ghost_move_count = 0;
-					if (x.ghosts[u].ghost_pos_y % x.yl <= x.yl / 2) {
-						x.ghosts[u].ghost_pos_y -= x.ghosts[u].ghost_pos_y % x.yl;
-					} else {
-						x.ghosts[u].ghost_pos_y += x.yl - x.ghosts[u].ghost_pos_y % x.yl;
-					}
+					x.ghosts[u].ghost_pos_y -= x.ghosts[u].ghost_pos_y % x.yl;
 					x.ghosts[u].ycell = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
 					x.ghosts[u].ghost_old_orientation = x.ghosts[u].ghost_orientation;
 				}
@@ -373,16 +443,11 @@ pacManGame = {
 					nextXCell = x.ghosts[u].xcell + 1;
 				if (x.cells[nextXCell + x.ghosts[u].ycell * x.xsize] == "WALL") {
 					x.ghosts[u].ghost_pos_x = x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl;
-					ghostCanMove = false;
+					x.ghosts[u].ghostCanMove = false;
 				}
 			} else if (x.ghosts[u].ghost_orientation == "top") {
 				if (x.ghosts[u].ghost_old_orientation != x.ghosts[u].ghost_orientation) {
-					x.ghosts[u].ghost_move_count = 0;
-					if (x.ghosts[u].ghost_pos_x % x.xl <= x.xl / 2) {
-						x.ghosts[u].ghost_pos_x -= x.ghosts[u].ghost_pos_x % x.xl;
-					} else {
-						x.ghosts[u].ghost_pos_x += x.xl - x.ghosts[u].ghost_pos_x % x.xl;
-					}
+					x.ghosts[u].ghost_pos_x -= x.ghosts[u].ghost_pos_x % x.xl;
 					x.ghosts[u].xcell = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
 					x.ghosts[u].ghost_old_orientation = x.ghosts[u].ghost_orientation;
 				}
@@ -395,16 +460,11 @@ pacManGame = {
 					nextYCell = x.ghosts[u].ycell - 1;
 				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] == "WALL") {
 					x.ghosts[u].ghost_pos_y = x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl;
-					ghostCanMove = false;
+					x.ghosts[u].ghostCanMove = false;
 				}
 			} else if (x.ghosts[u].ghost_orientation == "bottom") {
 				if (x.ghosts[u].ghost_old_orientation != x.ghosts[u].ghost_orientation) {
-					x.ghosts[u].ghost_move_count = 0;
-					if (x.ghosts[u].ghost_pos_x % x.xl <= x.xl / 2) {
-						x.ghosts[u].ghost_pos_x -= x.ghosts[u].ghost_pos_x % x.xl;
-					} else {
-						x.ghosts[u].ghost_pos_x += x.xl - x.ghosts[u].ghost_pos_x % x.xl;
-					}
+					x.ghosts[u].ghost_pos_x -= x.ghosts[u].ghost_pos_x % x.xl;
 					x.ghosts[u].xcell = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
 					x.ghosts[u].ghost_old_orientation = x.ghosts[u].ghost_orientation;
 				}
@@ -417,7 +477,7 @@ pacManGame = {
 					nextYCell = x.ghosts[u].ycell + 1;
 				if (x.cells[x.ghosts[u].xcell + nextYCell * x.xsize] == "WALL") {
 					x.ghosts[u].ghost_pos_y = x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl;
-					ghostCanMove = false;
+					x.ghosts[u].ghostCanMove = false;
 				}
 			}
 		}
@@ -514,47 +574,17 @@ pacManGame = {
 	"ghostMove" : function() {
 		x.ghostTestMove();
 		for(u = 0; u < x.ghosts.length; ++u) {
-			if (x.ghosts[u].ghost_orientation == "left") {
-				ghost_center_x = x.ghosts[u].ghost_pos_x + x.xl / 8 + x.xl / 1.3 / 2;
-				if (ghost_center_x <= x.xl / 2) {
-					x.ghosts[u].ghost_pos_x = x.canvas.width - x.xl / 2;
-				} else {
+			if (x.ghosts[u].ghostCanMove) {
+				if (x.ghosts[u].ghost_orientation == "left") {
 					x.ghosts[u].ghost_pos_x -= x.ghosts[u].ghost_move;
 				}
-				if (x.ghosts[u].ghost_eye)
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_1;
-				else
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_2;
-			}
-			else if (x.ghosts[u].ghost_orientation == "right") {
-				ghost_center_x = x.ghosts[u].ghost_pos_x + x.xl / 8 + x.xl / 1.3 / 2;
-				if (ghost_center_x >= x.canvas.width - x.xl / 2) {
-					x.ghosts[u].ghost_pos_x = 0;
-				} else {
+				else if (x.ghosts[u].ghost_orientation == "right") {
 					x.ghosts[u].ghost_pos_x += x.ghosts[u].ghost_move;
 				}
-				if (x.ghosts[u].ghost_eye)
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_1;
-				else
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_2;
-			}
-			else if (x.ghosts[u].ghost_orientation == "top") {
-				ghost_center_y = x.ghosts[u].ghost_pos_y + x.yl / 8 + x.yl / 1.4 / 2;
-				if (ghost_center_y <= x.yl / 2) {
-					x.ghosts[u].ghost_pos_y = x.canvas.height - x.yl / 2;
-				} else {
+				else if (x.ghosts[u].ghost_orientation == "top") {
 					x.ghosts[u].ghost_pos_y -= x.ghosts[u].ghost_move;
 				}
-				if (x.ghosts[u].ghost_eye)
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_1;
-				else
-					x.ghosts[u].ghostCurrentImage = x.ghosts[u].ghost_2;
-			}
-			else if (x.ghosts[u].ghost_orientation == "bottom") {
-				ghost_center_y = x.ghosts[u].ghost_pos_y + x.yl / 8 + x.yl / 1.4 / 2;
-				if (ghost_center_y >= x.canvas.height - x.yl / 2) {
-					x.ghosts[u].ghost_pos_y = 0;
-				} else {
+				else if (x.ghosts[u].ghost_orientation == "bottom") {
 					x.ghosts[u].ghost_pos_y += x.ghosts[u].ghost_move;
 				}
 				if (x.ghosts[u].ghost_eye)
