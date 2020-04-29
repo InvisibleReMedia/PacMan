@@ -187,8 +187,13 @@ pacManGame = {
 		this.banner = document.getElementById("banner");
 		this.banner.style.width = this.canvas.width + "px";
 		this.joystick = document.getElementById("joystick");
-		this.joystick.style.width = this.canvas.width + "px";
-		this.joystick.style.top = ((this.canvas.height + 95 - this.joystick.offsetHeight) / 2) + "px";
+		this.activateJoystick = isMobile();
+		if (this.activateJoystick) {
+			this.joystick.style.width = this.canvas.width + "px";
+			this.joystick.style.top = ((this.canvas.height + 95 - this.joystick.offsetHeight) / 2) + "px";
+		} else {
+			this.joystick.style.display = "none";
+		}
 		this.bravo = document.getElementById("bravo");
 		this.explode = document.getElementById("explode");
 		this.pacmanCurrentImage = this.pacman1_right;
@@ -225,7 +230,7 @@ pacManGame = {
 				}
 				pacManGame.banner.style.top = window.scrollY + "px";
 			}
-			if (pacManGame.joystick) {
+			if (pacManGame.joystick && pacManGame.activateJoystick) {
 				pacManGame.joystick.style.top = (window.scrollY + (screen.availHeight - this.joystick.offsetHeight) / 2) + "px";
 			}
 		});
