@@ -226,7 +226,7 @@ pacManGame = {
 				pacManGame.banner.style.top = window.scrollY + "px";
 			}
 			if (pacManGame.joystick) {
-				pacManGame.joystick.style.top = (window.scrollY + (this.canvas.height + 95 - this.joystick.offsetHeight) / 2) + "px";
+				pacManGame.joystick.style.top = (window.scrollY + (screen.availHeight - this.joystick.offsetHeight) / 2) + "px";
 			}
 		});
 		x = this;
