@@ -4,6 +4,8 @@ gameplay = [
 	{
 		"level" : 1,
 		"cakeCounter" : 0,
+		"wall" : new Image(),
+		"cake" : new Image(),
 		"board" : {
 			"x_size" : 17,
 			"y_size" : 27,
@@ -58,17 +60,10 @@ function drawGameplay(canvas, level) {
 		for(x = 0; x < xsize; ++x) {
 			c = gameplay[level].board.cells[x+y*xsize];
 			if (c == "WALL") {
-				ctx.fillStyle = "#222222FF";
-				ctx.fillRect(x*xl + 2, y*yl + 2, xl - 5, yl - 5);
+				ctx.drawImage(gameplay[level].wall, x*xl + 2, y*yl + 2, xl - 5, yl - 5);
 			} else if (c == "CAKE") {
 				++gameplay[level].cakeCounter;
-				ctx.beginPath();
-				ctx.fillStyle = "#CCCCCCFF";
-				ctx.fillRect(x*xl + 2, y*yl + 2, xl - 5, yl - 5);
-				ctx.arc(x*xl + xl/2, y*yl + yl/2, xl/4, 0, Math.PI*2);
-				ctx.fillStyle = "green";
-				ctx.fill();
-				ctx.closePath();
+				ctx.drawImage(gameplay[level].cake, x*xl + 2, y*yl + 2, xl - 5, yl - 5);
 			} else if (c == "EMPTY") {
 				ctx.beginPath();
 				ctx.fillStyle = "#CCCCCCFF";
