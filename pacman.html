@@ -49,6 +49,7 @@
 <script>
 
 function startGame() {
+    init(0);
     myBoardArea.start();
     myGameArea.start();
 }
@@ -65,7 +66,6 @@ var myGameArea = {
 	}
 }
 
-init(0);
 
 </script>
 
@@ -74,5 +74,6 @@ init(0);
 <canvas class="game" id="game"></canvas>
 <canvas class="board" id="board"></canvas>
 <img src="bravo.gif" class="bravo" id="bravo" style="display:none"/>
+<img src="anim_explode.gif" class="bravo" id="explode" style="display:none"/>
 </body>
 </html>

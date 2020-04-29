@@ -93,6 +93,7 @@ pacManGame = {
 	"pacman2_right" : new Image(),
 	"pacman2_top" : new Image(),
 	"pacman2_bottom" : new Image(),
+	"pacman_lost" : false,
 	"ghosts" : [
 		{
 			"ghost_1" : new Image(),
@@ -103,7 +104,7 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 3,
 			"ghost_pos_y" : 3,
-			"ghost_move" : 3,
+			"ghost_move" : 2,
 			"ghost_destination_x" : 3,
 			"ghost_destination_y" : 3,
 			"ghost_direction_change" : "none",
@@ -122,7 +123,7 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
 			"ghost_pos_y" : 0,
-			"ghost_move" : 3,
+			"ghost_move" : 2,
 			"ghost_destination_x" : 7,
 			"ghost_destination_y" : 0,
 			"ghost_direction_change" : "none",
@@ -141,7 +142,7 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 7,
 			"ghost_pos_y" : 19,
-			"ghost_move" : 3,
+			"ghost_move" : 2,
 			"ghost_destination_x" : 7,
 			"ghost_destination_y" : 19,
 			"ghost_direction_change" : "none",
@@ -160,7 +161,7 @@ pacManGame = {
 			"ghost_lastPos_y" : 0,
 			"ghost_pos_x" : 5,
 			"ghost_pos_y" : 9,
-			"ghost_move" : 3,
+			"ghost_move" : 2,
 			"ghost_destination_x" : 5,
 			"ghost_destination_y" : 9,
 			"ghost_direction_change" : "none",
@@ -186,6 +187,7 @@ pacManGame = {
 		this.banner = document.getElementById("banner");
 		this.banner.style.width = (this.canvas.width + 30) + "px";
 		this.bravo = document.getElementById("bravo");
+		this.explode = document.getElementById("explode");
 		this.pacmanCurrentImage = this.pacman1_right;
 		for(u = 0; u < this.ghosts.length; ++u) {
 			this.ghosts[u].ghostCurrentImage = this.ghosts[u].ghost_1;
@@ -595,22 +597,46 @@ pacManGame = {
 		}
 	},
 	"pacmanDraw" : function() {
-		ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
-		ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
-		if (x.cells[x.xcell + x.ycell * x.xsize] == "CAKE") {
-			x.cells[x.xcell + x.ycell * x.xsize] = "EMPTY";
-			drawGameplay(board, x.level);
-			pacManGame.banner.childNodes[1].innerText = gameplay[pacManGame.level].cakeCounter;
-			++pacManGame.score;
-			numbers(pacManGame.score * 100);
-			if (gameplay[pacManGame.level].cakeCounter == 0) {
-				clearInterval(pacManGame.timeout);
-				pacManGame.bravo.style.left = window.scrollX + "px";
-				pacManGame.bravo.style.width = screen.availWidth + "px";
-				pacManGame.bravo.style.height = screen.availHeight + "px";
-				pacManGame.bravo.style.top = window.scrollY + "px";
-				pacManGame.bravo.style.display = "inline";
+		if (!x.pacman_lost) {
+			ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
+			ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+			if (x.cells[x.xcell + x.ycell * x.xsize] == "CAKE") {
+				p = new Audio("pacman.wav");
+				var playPromise = p.play();
+				if (playPromise !== undefined) {
+					playPromise.then(_ => {}).catch(error => {});
+				}
+				x.cells[x.xcell + x.ycell * x.xsize] = "EMPTY";
+				drawGameplay(board, x.level);
+				x = pacManGame;
+				x.banner.childNodes[1].innerText = gameplay[pacManGame.level].cakeCounter;
+				++x.score;
+				numbers(x.score * 100);
+				if (gameplay[x.level].cakeCounter == 0) {
+					clearInterval(x.timeout);
+					x.bravo.style.left = window.scrollX + "px";
+					x.bravo.style.width = screen.availWidth + "px";
+					x.bravo.style.height = screen.availHeight + "px";
+					x.bravo.style.top = window.scrollY + "px";
+					x.bravo.style.display = "inline";
+				}
 			}
+			for(u = 0; u < x.ghosts.length; ++u) {
+				pacman_x = (x.pacman_pos_x - x.pacman_pos_x % x.xl) / x.xl;
+				pacman_y = (x.pacman_pos_y - x.pacman_pos_y % x.yl) / x.yl;
+				ghost_x = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
+				ghost_y = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
+				if (pacman_x == ghost_x && pacman_y == ghost_y) {
+					x.pacman_lost = true;
+				}
+			}
+		} else {
+			x.explode.style.left = (x.pacman_pos_x + 30 - x.xl / 2) + "px";
+			x.explode.style.width = (x.xl * 2) + "px";
+			x.explode.style.height = (x.yl * 2) + "px";
+			x.explode.style.top = (x.pacman_pos_y + 95 - x.yl / 2) + "px";
+			x.explode.style.display = "inline";
+			clearInterval(x.timeout);
 		}
 	},
 	"ghostDraw" : function() {
