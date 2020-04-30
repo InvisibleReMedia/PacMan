@@ -54,7 +54,9 @@
     top:0px;
     z-index:4;
     opacity:0.6;
+    display:none;
 }
+
 </style>
 </head>
 <body onload="startGame()">
@@ -81,17 +83,9 @@ var myGameArea = {
 
 </script>
 
-<div class="banner" id="banner"><img style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div align="right" class="counter" id="counter">0</div><br/><div align="right" id="score" style="overflow:hidden"></div>
+<div class="banner" id="banner"><img style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div align="right" class="counter" id="counter"></div><br/><div align="right" id="score" style="overflow:hidden"></div>
 </div>
-<div class="joystick" id="joystick"><div align="center"><img style="width:100px;height:100px" src="button_top.png"
-            onmousedown="this.src='button_top_down.png';generateKeyDown('top');" onmouseup="this.src='button_top.png'"/></div><div align="center"><span align="center"><img
-            style="width:100px;height:100px" src="button_left.png"
-            onmousedown="this.src='button_left_down.png';generateKeyDown('left');" onmouseup="this.src='button_left.png'"/><img
-            style="width:100px;height:100px" src="button_right.png"
-            onmousedown="this.src='button_right_down.png';generateKeyDown('right');" onmouseup="this.src='button_right.png'"/></span></div><br/><div align="center"><img
-            style="width:100px;height:100px" src="button_bottom.png"
-            onmousedown="this.src='button_bottom_down.png';generateKeyDown('bottom');" onmouseup="this.src='button_bottom.png'"/></div></div>
-<canvas class="game" id="game"></canvas>
+<canvas class="game" id="game" ontouchstart="generateKeyDown(event.touches[0].clientX, event.touches[0].clientY);"></canvas>
 <canvas class="board" id="board"></canvas>
 <img src="bravo.gif" class="bravo" id="bravo" style="display:none"/>
 <img src="anim_explode.gif" class="bravo" id="explode" style="display:none"/>
