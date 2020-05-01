@@ -77,7 +77,7 @@ function Lee(ghost) {
 pacManGame = {
 	"state" : 0,
 	"score" : 0,
-	"interval" : 0.000001,
+	"interval" : 1,
 	"timer" : 100,
 	"pacman_pos_x" : 0,
 	"pacman_pos_y" : 0,
@@ -179,6 +179,15 @@ pacManGame = {
 	"pacman_orientation" : "right",
 	"pacman_rotate" : 0,
 	"pacmanCanMove" : true,
+	"pacmanSplash" : function() {
+		pacManGame.pacmanMove();
+		pacManGame.initDraw();
+		clearInterval(pacManGame.initDrawTimeout);
+	},
+	"pacmanStart" : function() {
+		pacManGame.timeout = setInterval(pacManGame.play, pacManGame.interval);
+		clearInterval(pacManGame.readyTimeout);
+	},
 	"firstPass" : function(canvas, level) {
 		canvas.width = this.xsize * this.xl;
 		canvas.height = this.ysize * this.yl;
@@ -192,7 +201,17 @@ pacManGame = {
 		for(u = 0; u < this.ghosts.length; ++u) {
 			this.ghosts[u].ghostCurrentImage = this.ghosts[u].ghost_1;
 		}
-		this.timeout = setInterval(this.play, this.interval);
+		window.addEventListener('scroll', function(e) {
+			if (pacManGame.banner) {
+				if (window.scrollX < pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34) {
+					pacManGame.banner.style.left = window.scrollX + "px";
+				}
+				else {
+					pacManGame.banner.style.left = (pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34) + "px";
+				}
+				pacManGame.banner.style.top = window.scrollY + "px";
+			}
+		});
 		window.addEventListener('keydown', function(e) {
 			if (e.keyCode == 37) {
 				pacManGame.pacman_old_orientation = pacManGame.pacman_orientation;
@@ -212,21 +231,12 @@ pacManGame = {
 			}
 			e.preventDefault();
 		});
-		window.addEventListener('scroll', function(e) {
-			if (pacManGame.banner) {
-				if (window.scrollX < pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34) {
-					pacManGame.banner.style.left = window.scrollX + "px";
-				}
-				else {
-					pacManGame.banner.style.left = (pacManGame.canvas.width - pacManGame.banner.offsetWidth + 34) + "px";
-				}
-				pacManGame.banner.style.top = window.scrollY + "px";
-			}
-		});
 		x = this;
 		x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
 		x.vertical_scroll = x.pacman_pos_y - 2 * x.yl;
 		window.scroll(x.horizontal_scroll, x.vertical_scroll);
+		this.readyTimeout = setInterval(this.pacmanStart, 5000);
+		this.initDrawTimeout = setInterval(this.pacmanSplash, 2000);
 	},
 	"pacmanTestMove" : function() {
 		if (x.pacman_orientation == "left") {
@@ -570,10 +580,6 @@ pacManGame = {
 					x.pacmanCurrentImage = x.pacman1_bottom;
 			}
 		}
-		if (x.ghost_pink_eye)
-			x.ghostPinkCurrentImage = x.ghost_pink_2;
-		else
-			x.ghostPinkCurrentImage = x.ghost_pink_1;
 	},
 	"ghostMove" : function() {
 		x.ghostTestMove();
@@ -604,6 +610,7 @@ pacManGame = {
 			ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
 			if (x.cells[x.xcell + x.ycell * x.xsize] == "CAKE") {
 				p = new Audio("pacman.wav");
+				p.load();
 				var playPromise = p.play();
 				if (playPromise !== undefined) {
 					playPromise.then(_ => {}).catch(error => {});
@@ -611,7 +618,7 @@ pacManGame = {
 				x.cells[x.xcell + x.ycell * x.xsize] = "EMPTY";
 				drawGameplay(board, x.level);
 				x = pacManGame;
-				x.banner.childNodes[1].innerText = gameplay[pacManGame.level].cakeCounter;
+				x.banner.childNodes[2].innerText = gameplay[pacManGame.level].cakeCounter;
 				++x.score;
 				numbers(x.score * 100);
 				if (gameplay[x.level].cakeCounter == 0) {
@@ -648,6 +655,16 @@ pacManGame = {
 		for(u = 0; u < x.ghosts.length; ++u) {
 			ctx.drawImage(x.ghosts[u].ghostCurrentImage, x.ghosts[u].ghost_pos_x + x.xl / 8, x.ghosts[u].ghost_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
 		}
+	},
+	"initDraw" : function() {
+		ctx = x.canvas.getContext("2d");
+		ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
+		ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+		x.ghostDraw();
+		drawGameplay(board, x.level);
+		x = pacManGame;
+		x.banner.childNodes[2].innerText = gameplay[pacManGame.level].cakeCounter;
+		numbers(x.score * 100);
 	},
 	"play" : function() {
 		x = pacManGame;

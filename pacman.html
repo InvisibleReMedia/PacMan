@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<script language="javascript" src="responsive.js"></script>
+<script language="javascript" src="plateau.js"></script>
+<script language="javascript" src="game.js"></script>
+<style>
+.board {
+    position : absolute;
+    left : 0px;
+    top : 95px;
+    z-index : 1;
+    border: 1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+.game {
+    position : absolute;
+    left : 0px;
+    top : 95px;
+    z-index : 2;
+    border: 1px solid #d3d3d3;
+}
+.banner {
+    position : absolute;
+    left : 0px;
+    top : 0px;
+    z-index : 3;
+    border : 1px solid #d3d3d3;
+    background-color : #f1f2f1;
+    opacity : 0.7;
+}
+.counter {
+    position : relative;
+    top : 10px;
+    left : -10px;
+    font-size : 10pt;
+    color : red;
+}
+
+.bravo {
+    position:absolute;
+    align:center;
+    valign:middle;
+    z-index:4;
+}
+
+.joystick {
+    width:100%;
+    min-height:0px;
+    max-height:100%;
+    position:absolute;
+    left:0px;
+    top:0px;
+    z-index:4;
+    opacity:0.6;
+    display:none;
+}
+
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+function startGame() {
+    init(0);
+    myBoardArea.start();
+    myGameArea.start();
+}
+
+var myBoardArea = {
+    start : function() {
+        drawGameplay(board, 0);
+    }
+}
+
+var myGameArea = {
+    start : function() {
+        pacManGame.firstPass(game, 0);
+	}
+}
+
+
+</script>
+
+<div class="banner" id="banner"><img style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px" src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div align="right" class="counter" id="counter"></div><br/><div align="right" id="score" style="overflow:hidden"></div>
+</div>
+<canvas class="game" id="game" ontouchstart="generateKeyDown(event.touches[0].clientX, event.touches[0].clientY);"></canvas>
+<canvas class="board" id="board"></canvas>
+<img src="bravo.gif" class="bravo" id="bravo" style="display:none"/>
+<img src="anim_explode.gif" class="bravo" id="explode" style="display:none"/>
+</body>
+</html>
