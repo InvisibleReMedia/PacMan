@@ -63,13 +63,13 @@ function drawGameplay(canvas, level) {
 				ctx.drawImage(gameplay[level].wall, x*xl + 2, y*yl + 2, xl - 5, yl - 5);
 			} else if (c == "CAKE") {
 				++gameplay[level].cakeCounter;
-				ctx.drawImage(gameplay[level].cake, x*xl + 2, y*yl + 2, xl - 5, yl - 5);
+				ctx.drawImage(gameplay[level].cake, x*xl + 2 + xl / (4*1.4), y*yl + 2 + yl / (4*1.4), xl / 1.4 - 5, yl / 1.4 - 5);
 			} else if (c == "EMPTY") {
 				ctx.beginPath();
-				ctx.fillStyle = "#CCCCCCFF";
+				ctx.fillStyle = "#FFFFFFFF";
 				ctx.fillRect(x*xl + 2, y*yl + 2, xl - 5, yl - 5);
 				ctx.arc(x*xl + xl/2, y*yl + yl/2, xl/4, 0, Math.PI*2);
-				ctx.fillStyle = "#CCCCCCFF";
+				ctx.fillStyle = "#FFFFFFFF";
 				ctx.fill();
 				ctx.closePath();
 			}
