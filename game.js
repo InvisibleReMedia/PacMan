@@ -77,6 +77,7 @@ function Lee(ghost) {
 pacManGame = {
 	"state" : 0,
 	"score" : 0,
+	"lives" : 3,
 	"interval" : 1,
 	"timer" : 100,
 	"pacman_pos_x" : 0,
@@ -604,6 +605,50 @@ pacManGame = {
 			}
 		}
 	},
+	"pacmanBlink" : function() {
+		if (!x.blink) {
+			ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
+			for(u = 0; u < x.ghosts.length; ++u) {
+				ctx.drawImage(x.ghosts[u].ghostCurrentImage, x.ghosts[u].ghost_pos_x + x.xl / 8, x.ghosts[u].ghost_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+			}
+		} else {
+			for(u = 0; u < x.ghosts.length; ++u) {
+				ctx.clearRect(x.ghosts[u].ghost_lastPos_x + x.xl / 8 - x.ghosts[u].ghost_move, x.ghosts[u].ghost_lastPos_y + x.yl / 8 - x.ghosts[u].ghost_move, x.xl / 1.3 + x.ghosts[u].ghost_move * 2, x.yl / 1.3 + x.ghosts[u].ghost_move * 2);
+			}
+			ctx.drawImage(x.pacmanCurrentImage, x.pacman_pos_x + x.xl / 8, x.pacman_pos_y + x.yl / 8, x.xl / 1.3, x.yl / 1.3);
+		}
+		x.blink = !x.blink;
+		++x.blinkCount;
+		if (x.blinkCount > 10) {
+			clearInterval(x.blinkTimeout);
+			x.pacmanReBirth();
+		}
+	},
+	"pacmanReBirth" : function() {
+		do {
+			near_ghost = false;
+			px = Math.floor(Math.random() * x.xsize);
+			py = Math.floor(Math.random() * x.ysize);
+			for(u = 0; u < x.ghosts.length; ++u) {
+				ghost_x = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
+				ghost_y = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
+				if (Math.abs(ghost_x - px) <= 5 && Math.abs(ghost_y - py) <= 5) {
+					near_ghost = true;
+				}
+			}
+			is_wall = x.cells[px + py * x.xsize] == "WALL";
+		} while(near_ghost || is_wall);
+		ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
+		x.pacman_pos_x = px * x.xl;
+		x.pacman_pos_y = py * x.yl;
+		x.xcell = px;
+		x.ycell = py;
+		x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
+		x.vertical_scroll = x.pacman_pos_y - 2 * x.yl;
+		window.scroll(x.horizontal_scroll, x.vertical_scroll);
+		x.readyTimeout = setInterval(x.pacmanStart, 3000);
+		x.initDrawTimeout = setInterval(x.pacmanSplash, 100);
+	},
 	"pacmanDraw" : function() {
 		if (!x.pacman_lost) {
 			ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
@@ -636,7 +681,15 @@ pacManGame = {
 				ghost_x = (x.ghosts[u].ghost_pos_x - x.ghosts[u].ghost_pos_x % x.xl) / x.xl;
 				ghost_y = (x.ghosts[u].ghost_pos_y - x.ghosts[u].ghost_pos_y % x.yl) / x.yl;
 				if (pacman_x == ghost_x && pacman_y == ghost_y) {
-					x.pacman_lost = true;
+					if (x.lives == 0)
+						x.pacman_lost = true;
+					else {
+						clearInterval(x.timeout);
+						x.blink = false;
+						x.blinkCount = 0;
+						x.blinkTimeout = setInterval(x.pacmanBlink, 200);
+						break;
+					}
 				}
 			}
 		} else {
@@ -665,6 +718,8 @@ pacManGame = {
 		x = pacManGame;
 		x.banner.childNodes[2].innerText = gameplay[pacManGame.level].cakeCounter;
 		numbers(x.score * 100);
+		--x.lives;
+		x.banner.childNodes[1].removeChild(x.banner.childNodes[1].childNodes[x.lives]);
 	},
 	"play" : function() {
 		x = pacManGame;
