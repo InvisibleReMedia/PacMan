@@ -9,10 +9,17 @@ body {
 a {
 	color:#08f;
 }
+.area2d {
+	position:absolute;
+	top:0px;
+	left:0px;
+	z-index:2;
+	width:188px;
+	height:300px;
+}
 </style>
 </head>
 <body>
-	<div id="code"/>
 	<script type="module">
 		import * as g from './plateau.module.js';
 		import * as THREE from './build/three.module.js';
@@ -34,6 +41,8 @@ a {
 			var yl = g.GamePlay[0].board.y_length;
 			var ys = g.GamePlay[0].board.y_size;
 			var xs = g.GamePlay[0].board.x_size;
+			g.DrawGamePlay(board, 0, area2d.offsetWidth, area2d.offsetHeight);
+
 			camera = new THREE.PerspectiveCamera(-60, window.innerWidth / window.innerHeight, 1, 5000 );
 			camera.position.set( 6 * xl + xl / 2, -300, 6 * yl + yl / 2 );
 
@@ -47,64 +56,90 @@ a {
 
 			scene.add( light );
 
+			// Bords superieurs
+			var geometry = new THREE.BoxBufferGeometry( xl, 500, 1 );
+			var object;
+			for(var x = 0; x < xs; ++x) {
+				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+					color : 0xff0000
+				}));
+				object.position.x = x * xl;
+				object.position.y = 0;
+				object.position.z = -yl;
+				scene.add( object );
+				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+					color : 0xff0000
+				}));
+				object.position.x = x * xl;
+				object.position.y = 0;
+				object.position.z = ys * yl;
+				scene.add( object );
+			}
+			// Bords inferieures
+			geometry = new THREE.BoxBufferGeometry( 1, 500, yl );
+			for(var z = 0; z < ys; ++z) {
+				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+					color : 0xff0000
+				}));
+				object.position.x = -xl;
+				object.position.y = 0;
+				object.position.z = z * yl;
+				scene.add( object );
+				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+					color : 0xff0000
+				}));
+				object.position.x = xs * xl;
+				object.position.y = 0;
+				object.position.z = z * yl;
+				scene.add( object );
+			}
+
 			for(var z = 0; z < ys; ++z) {
 				for(var x = 0; x < xs; ++x) {
 
 					// SUD
 					var object = null;
-					var geometry = new THREE.BoxBufferGeometry( xl, 500, 1 );
+					geometry = new THREE.BoxBufferGeometry( xl, 500, 1 );
 					if (z + 1 < ys) {
-						if (g.GamePlay[0].board.cells[x + (z+1) * xs] != "WALL") {
+						if (g.GamePlay[0].board.cells[x + (z+1) * xs] == "WALL") {
 							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 								color : Math.random() * 0xffffff
 							}));
 						}
-					} else {
-						object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-							color : 0xff0000
-						}));
 					}
 					if (object) {
 						object.position.x = x * xl;
 						object.position.y = 0;
-						object.position.z = (z+1) * yl;
+						object.position.z = z * yl;
 
 						scene.add( object );
 					}
 					// NORD
 					if (z - 1 >= 0) {
-						if (g.GamePlay[0].board.cells[x + (z-1) * xs] != "WALL") {
+						if (g.GamePlay[0].board.cells[x + (z-1) * xs] == "WALL") {
 							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 								color : Math.random() * 0xffffff
 							}));
 						}
-					} else {
-						object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-							color : 0xff0000
-						}));
 					}
 					if (object) {
 						object.position.x = x * xl;
 						object.position.y = 0;
-						object.position.z = (z-1) * yl;
+						object.position.z = z * yl;
 
 						scene.add( object );
 					}
 					// EST
 					var geometry = new THREE.BoxBufferGeometry( 1, 500, yl );
 					if (x + 1 < xs) {
-						if (g.GamePlay[0].board.cells[x+1 + z * xs] != "WALL") {
+						if (g.GamePlay[0].board.cells[x+1 + z * xs] == "WALL") {
 							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 								color : Math.random() * 0xffffff
 							}));
 						}
-					} else {
-						object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-							color : 0xff0000
-						}));
 					}
 					if (object) {
-						object.position.x = (x+1) * xl;
+						object.position.x = x * xl + xl;
 						object.position.y = 0;
 						object.position.z = z * yl;
 
@@ -112,18 +147,14 @@ a {
 					}
 					// OUEST
 					if (x >= 0) {
-						if (g.GamePlay[0].board.cells[x-1 + z * xs] != "WALL") {
+						if (g.GamePlay[0].board.cells[x-1 + z * xs] == "WALL") {
 							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 								color : Math.random() * 0xffffff
 							}));
 						}
-					} else {
-						object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-							color : 0xff0000
-						}));
 					}
 					if (object) {
-						object.position.x = (x-1) * xl;
+						object.position.x = x * xl;
 						object.position.y = 0;
 						object.position.z = z * yl;
 
@@ -180,15 +211,12 @@ a {
 
 
 		function render() {
-		
 			
-			var code = document.getElementById("code");
-			code.innerText = mvt_x;
-
 			renderer.clear();
 			renderer.render( scene, camera );
 		}
 
 	</script>
+	<div class="area2d" id="area2d"><canvas id="board"></canvas></div>
 </body>
 </html>
