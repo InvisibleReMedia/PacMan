@@ -16,6 +16,7 @@ a {
 	z-index:2;
 	width:188px;
 	height:300px;
+	background-color: #aebebe;
 }
 </style>
 </head>
@@ -44,21 +45,49 @@ a {
 			g.DrawGamePlay(board, 0, area2d.offsetWidth, area2d.offsetHeight);
 
 			camera = new THREE.PerspectiveCamera(-60, window.innerWidth / window.innerHeight, 1, 5000 );
-			camera.position.set( 6 * xl + xl / 2, -300, 6 * yl + yl / 2 );
+			camera.position.set( 100, 0, 240 );
 
 			scene = new THREE.Scene();
-			scene.background = new THREE.Color( 0xf0f0f0 );
+			scene.background = new THREE.Color( 0xffffff );
 
 			scene.add( new THREE.AmbientLight( 0xffffff, 0.7 ));
 
-			var light = new THREE.DirectionalLight( 0xffffff, 0.75 );
+			var light = new THREE.DirectionalLight( 0xffffff, 0.7 );
 			light.position.set( 0, 0, 500 ).normalize();
 
 			scene.add( light );
 
+			var textureCiel = new THREE.TextureLoader().load( "couleur-ciel-750x400.jpeg" );
+
+			// hauteur plafond
+			var zsize = 50;
+			// Ciel
+			var geometry = new THREE.BoxBufferGeometry( xl * xs + xl / 2, 1, yl * ys + yl / 2);
+			var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+				color : 0xffffff
+			}));
+			object.position.x = xl * xs / 2 - xl / 2;
+			object.position.y = zsize / 2;
+			object.position.z = yl * ys / 2 - yl / 2;
+			scene.add( object );
+
+			// Sol 
+			object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+				color : 0xffffff,
+				map : textureCiel
+			}));
+			object.position.x = xl * xs / 2 - xl / 2;
+			object.position.y = -zsize / 2;
+			object.position.z = yl * ys / 2 - yl / 2;
+			scene.add( object );
+
+			// cake
+			var cakeGeometry = new THREE.SphereGeometry( 5, 32, 32 );
+			var cakeMaterial = new THREE.MeshLambertMaterial( { color : 0xffff00 });
+			var cake;
+
 			// Bords superieurs
-			var geometry = new THREE.BoxBufferGeometry( xl, 500, 1 );
-			var object;
+			geometry = new THREE.BoxBufferGeometry( xl, zsize, 1 );
 			for(var x = 0; x < xs; ++x) {
 				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 					color : 0xff0000
@@ -76,7 +105,7 @@ a {
 				scene.add( object );
 			}
 			// Bords inferieures
-			geometry = new THREE.BoxBufferGeometry( 1, 500, yl );
+			geometry = new THREE.BoxBufferGeometry( 1, zsize, yl );
 			for(var z = 0; z < ys; ++z) {
 				object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
 					color : 0xff0000
@@ -97,68 +126,25 @@ a {
 			for(var z = 0; z < ys; ++z) {
 				for(var x = 0; x < xs; ++x) {
 
-					// SUD
 					var object = null;
-					geometry = new THREE.BoxBufferGeometry( xl, 500, 1 );
-					if (z + 1 < ys) {
-						if (g.GamePlay[0].board.cells[x + (z+1) * xs] == "WALL") {
-							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-								color : Math.random() * 0xffffff
-							}));
-						}
-					}
-					if (object) {
+					var color = Math.random() * 0xffffff;
+					if (g.GamePlay[0].board.cells[x + z * xs] == "WALL") {
+
+						geometry = new THREE.BoxBufferGeometry( xl, zsize, yl );
+						object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
+							color : color
+						}));
 						object.position.x = x * xl;
 						object.position.y = 0;
 						object.position.z = z * yl;
 
 						scene.add( object );
-					}
-					// NORD
-					if (z - 1 >= 0) {
-						if (g.GamePlay[0].board.cells[x + (z-1) * xs] == "WALL") {
-							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-								color : Math.random() * 0xffffff
-							}));
-						}
-					}
-					if (object) {
-						object.position.x = x * xl;
-						object.position.y = 0;
-						object.position.z = z * yl;
-
-						scene.add( object );
-					}
-					// EST
-					var geometry = new THREE.BoxBufferGeometry( 1, 500, yl );
-					if (x + 1 < xs) {
-						if (g.GamePlay[0].board.cells[x+1 + z * xs] == "WALL") {
-							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-								color : Math.random() * 0xffffff
-							}));
-						}
-					}
-					if (object) {
-						object.position.x = x * xl + xl;
-						object.position.y = 0;
-						object.position.z = z * yl;
-
-						scene.add( object );
-					}
-					// OUEST
-					if (x >= 0) {
-						if (g.GamePlay[0].board.cells[x-1 + z * xs] == "WALL") {
-							object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-								color : Math.random() * 0xffffff
-							}));
-						}
-					}
-					if (object) {
-						object.position.x = x * xl;
-						object.position.y = 0;
-						object.position.z = z * yl;
-
-						scene.add( object );
+					} else if (g.GamePlay[0].board.cells[x + z * xs] == "CAKE") {
+						var cake = new THREE.Mesh( cakeGeometry, cakeMaterial );
+						cake.position.x = x * xl;
+						cake.position.y = 20;
+						cake.position.z = z * yl;
+						scene.add( cake );
 					}
 				}
 			}
