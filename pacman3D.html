@@ -25,6 +25,7 @@ a {
 		import * as g from './plateau.module.js';
 		import * as THREE from './build/three.module.js';
 		import { CinematicCamera } from './jsm/cameras/CinematicCamera.js';
+		import { OBJLoader } from './jsm/loaders/OBJLoader.js';
 
 		var camera, scene, raycaster, renderer;
 
@@ -56,6 +57,19 @@ a {
 			light.position.set( 0, 0, 500 ).normalize();
 
 			scene.add( light );
+
+			// ghost
+			var loader = new OBJLoader();
+			loader.load("ghost2.obj", function (obj) {
+				obj.position.x = 100;
+				obj.position.y = 10;
+				obj.position.z = 240;
+				obj.rotation.z = Math.PI;
+				obj.scale.set( 4.0, 4.0, 4.0 );
+				scene.add( obj );
+			}, undefined, function( error ) {
+				console.error( error );
+			});
 
 			var textureCiel = new THREE.TextureLoader().load( "couleur-ciel-750x400.jpeg" );
 
