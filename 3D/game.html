@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Game test</title>
+        <style>
+            .banner {
+                position : absolute;
+                left : 0px;
+                top : 0px;
+                z-index : 3;
+                border : 1px solid #d3d3d3;
+                background-color : #f1f2f1;
+                opacity : 0.7;
+            }
+            .board {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                z-index : 1;
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+            }
+            .game {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                margin-bottom : 0px;
+                z-index : 2;
+                border: 1px solid #d3d3d3;
+            }
+            .counter {
+                position : relative;
+                top : 10px;
+                left : -10px;
+                font-size : 10pt;
+                color : red;
+                float:right;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            import PacMan from './pacman.module.js'
+            import Ghost from './ghost.module.js'
+            import Loop from './loop.module.js'
+            import Board from './board.module.js'
+            let domBoard = document.getElementById("dom-board")
+            let board = new Board( 1 )
+            board.start().then( _ => {
+                board.Draw( domBoard )
+                let pacman = new PacMan( 17, 27, 30, 30, {
+                    "left" : 30,
+                    "right" : 30,
+                    "top" : 30,
+                    "bottom" : 30
+                }, board.getGrid(), 4, 6, 3 )
+                let ghosts = [ new Ghost("purple"), new Ghost("red"), new Ghost("blue"), new Ghost("green") ]
+                let domBanner = document.getElementById("banner")
+                let loop = new Loop( pacman, ghosts, 17, 27, 30, 30, {
+                    "left" : 30,
+                    "right" : 30,
+                    "top" : 30,
+                    "bottom" : 30
+                }, domBanner )
+                let domGame = document.getElementById("dom-game")
+                loop.start(domGame)
+            })
+        </script>
+        <script nomodule>
+            Your browser does not support modules
+        </script>
+        <div class="banner" id="banner"><img
+            style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div
+            style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px"
+            src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img
+            style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div
+            class="counter" id="counter"></div><br/><div id="score" style="float:right;overflow:hidden"></div>
+        <canvas id="dom-board" class="board"></canvas>
+        <canvas id="dom-game" class="game"></canvas>
+        <br/>
+    </body>
+</html>
