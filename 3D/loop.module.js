@@ -38,6 +38,21 @@ function loadImages(resolve, reject) {
     }
 }
 
+function numbers(n) {
+	let z = document.getElementById("score");
+	let h = "";
+	let k = n;
+	let t = Math.log10(n) + 1;
+	while(t > 0) {
+		let m = k % 10;
+		if (t == 1 && m > 0 || t > 1)
+			h = "<img src='n_" + m + ".png'/>" + h;
+		k = (k - k % 10) / 10;
+		--t;
+	}
+	z.innerHTML = h;
+}
+
 export default class Loop {
 
     constructor(pacman, ghosts, xsize, ysize, xlength, ylength, margin, banner) {
@@ -51,6 +66,8 @@ export default class Loop {
         this.state = 0
         this.pacman = pacman
         this.ghosts = ghosts
+        this.score = 0
+        this.status = "start"
     }
 
     start(canvas, interval = 1) {
@@ -83,14 +100,30 @@ export default class Loop {
             }
             e.preventDefault();
         })
+        this.status = "running"
+    }
+
+    getStatus() {
+        return this.status
+    }
+
+    setStatus(status) {
+        this.status = status
     }
 
     play(me) {
-        let { pacman, ghosts } = me
+        let { pacman, ghosts, status, drawingContext } = me
         switch(me.state) {
 
             case 0:
-                pacman.draw(me.drawingContext)
+                if (status == "running")
+                    pacman.draw(drawingContext)
+                else if (status == "win")
+                    pacman.win()
+                else if (status == "blink")
+                    pacman.blink(drawingContext)
+                else if (status == "reBirth")
+                    pacman.reBirth(drawingContext)
                 break
             case 1:
                 pacman.goToDestination()
@@ -102,7 +135,7 @@ export default class Loop {
                 break
             case 3:
                 ghosts.forEach(element => {
-                    element.draw(me.drawingContext)
+                    element.draw(drawingContext)
                 })
                 break
             case 4:
@@ -119,5 +152,10 @@ export default class Loop {
             ++me.state
         else
             me.state = 0
+    }
+
+    increaseScore() {
+        ++this.score
+        numbers(this.score)
     }
 } 

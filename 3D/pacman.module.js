@@ -258,11 +258,70 @@ export default class PacMan {
             }
             this.grid[ areax + areay * this.xsize ] = "EMPTY"
             getModule().board.redrawBoard()
+            let banner = document.getElementById("banner")
+            banner.childNodes[2].innerText = getModule().board.cakeCounter;
+            getModule().loop.increaseScore()
+            if (getModule().board.cakeCounter == 0) {
+                getModule().loop.setStatus("win")
+            }
         }
     }
 
     eat() {
         this.eating = !this.eating
+    }
+
+    blink(context) {
+		if (!x.blinkState) {
+            context.clearRect(this.currentx + this.xlength / 8 - this.step + this.margin.left,
+                this.currenty + this.ylength / 8 - this.step + this.margin.top,
+                this.xlength / 1.1 + this.step * 2,
+                this.ylength / 1.1 + this.step * 2)
+		} else {
+            context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
+                this.currentx + this.xlength / 8 + this.margin.left,
+                this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
+		}
+		this.blinkState = !this.blinkState;
+		++x.blinkCount;
+		if (x.blinkCount > 10) {
+            getModule().loop.setStatus("reBirth")
+		}
+    }
+
+    reBirth(context) {
+        let is_wall, near_ghost, px, py
+		do {
+			near_ghost = false
+			px = Math.floor(Math.random() * x.xsize)
+            py = Math.floor(Math.random() * x.ysize)
+            let ghosts = getModule().loop.ghosts
+			for(let u = 0; u < ghosts.length; ++u) {
+                let ghost = ghosts[u]
+				let ghost_x = (ghost.currentx - ghost.currentx % this.xlength) / this.xlength
+				let ghost_y = (ghost.currenty - ghost.currenty % x.ylength) / x.ylength
+				if (Math.abs(ghost_x - px) <= 5 && Math.abs(ghost_y - py) <= 5)
+					near_ghost = true
+			}
+			is_wall = x.cells[px + py * x.xsize] == "WALL"
+        } while(near_ghost || is_wall)
+        
+        context.clearRect(this.currentx + this.xlength / 8 - this.step + this.margin.left,
+            this.currenty + this.ylength / 8 - this.step + this.margin.top,
+            this.xlength / 1.1 + this.step * 2,
+            this.ylength / 1.1 + this.step * 2)
+        this.currentx = this.destinationx = px * this.xlength;
+        this.currenty = this.destinationy = py * this.ylength;
+        getModule().loop.setStatus("running")
+    }
+
+    win() {
+        let bravo = document.getElementById("bravo")
+        bravo.style.left = window.scrollX + "px";
+        bravo.style.width = screen.availWidth + "px";
+        bravo.style.height = screen.availHeight + "px";
+        bravo.style.top = window.scrollY + "px";
+        bravo.style.display = "inline";
     }
 
 }
