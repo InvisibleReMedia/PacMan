@@ -49,6 +49,7 @@ export default class Loop {
     }
 
     start(canvas, interval = 0.000001) {
+        this.canvas = canvas
         canvas.width = this.xsize * this.xlength + this.margin.left + this.margin.right
         canvas.height = this.ysize * this.ylength + this.margin.top + this.margin.bottom
         this.banner.style.width = canvas.width + "px"
@@ -62,6 +63,32 @@ export default class Loop {
         this.pacman.init(setCountReady)
         this.ghosts.forEach( element => 
             element.init(setCountReady) )
+        window.addEventListener('scroll', e => {
+            if (this.banner) {
+                if (window.scrollX < this.canvas.width - this.banner.offsetWidth) {
+                    this.banner.style.left = window.scrollX + "px";
+                }
+                else {
+                    this.banner.style.left = (this.canvas.width - this.banner.offsetWidth) + "px";
+                }
+                this.banner.style.top = window.scrollY + "px";
+            }
+        })
+        window.addEventListener('keydown', e => {
+            if (e.keyCode == 37) {
+                this.pacman.setOrientation("left")
+            }
+            else if (e.keyCode == 39) {
+                this.pacman.setOrientation("right")
+            }
+            else if (e.keyCode == 38) {
+                this.pacman.setOrientation("top")
+            }
+            else if (e.keyCode == 40) {
+                this.pacman.setOrientation("bottom")
+            }
+            e.preventDefault();
+        })
     }
 
     play(me) {

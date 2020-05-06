@@ -69,6 +69,16 @@ function test(me, select) {
         return true
 }
 
+function move(me, select) {
+    let center = select.position + select.limit / 8 + select.limit / 1.1 / 2;
+    if (select.isReachBorder(me, center)) {
+        select.position = select.oppositePosition
+        select.oppositeScrolling(select.position, me)
+    } else
+        select.position += select.move
+    select.updateScrolling(me)
+}
+
 export default class PacMan {
 
 
@@ -81,7 +91,7 @@ export default class PacMan {
     // startx : case x départ
     // starty : case y départ
     // step : pas en px
-    constructor(xsize, ysize, xlength, ylength, margin, grid, startx, starty, step, drawCallback) {
+    constructor(xsize, ysize, xlength, ylength, margin, grid, startx, starty, step) {
         this.xsize = xsize
         this.ysize = ysize
         this.xlength = xlength
@@ -104,23 +114,34 @@ export default class PacMan {
         } ).then( images => {
             this.images = images
             acknowledge()
-        } ).catch( error => console.log(error) );
+        } ).catch( error => console.log(error) )
+    }
+
+    setOrientation(orientation) {
+        this.previousOrientation = this.currentOrientation
+        this.currentOrientation = orientation
     }
 
     test() {
-        let select = {}
+        let select
         let result
+        this.previousx = this.currentx
+        this.previousy = this.currenty
         switch(this.currentOrientation) {
             case 'left':
-                select.position_i = this.currenty
-                select.limit_i = this.ylength
-                select.position = this.currentx
-                select.limit = this.xlength
-                select.isReachBorder = (select, me) => 
-                    select.position == 0
-                select.opposite = this.xsize - 1
-                select.move = -1
-                select.compute = (x,y,me) => x + y * me.xsize
+                select = {
+                    "position_i" : this.currenty,
+                    "area_i" : this.ycell,
+                    "limit_i" : this.ylength,
+                    "position" : this.currentx,
+                    "area" : this.xcell,
+                    "limit" : this.xlength,
+                    "isReachBorder" : (select, me) =>
+                        select.position == 0,
+                    "opposite" : this.xsize - 1,
+                    "move" : -1,
+                    "compute" : (x, y, me) => x + y * me.xsize
+                }
                 result = test(this, select)
                 this.currentx = select.position
                 this.currenty = select.position_i
@@ -128,14 +149,19 @@ export default class PacMan {
                 this.ycell = select.area_i
                 break
             case 'right':
-                select.position_i = this.currenty
-                select.limit_i = this.ylength
-                select.position = this.currentx
-                select.limit = this.xlength
-                select.isReachBorder = (select, me) => 
-                    select.position == me.xsize - 1
-                select.opposite = 0
-                select.move = 1
+                select = {
+                    "position_i" : this.currenty,
+                    "area_i" : this.ycell,
+                    "limit_i" : this.ylength,
+                    "position" : this.currentx,
+                    "area" : this.xcell,
+                    "limit" : this.xlength,
+                    "isReachBorder" : (select, me) =>
+                        select.position == me.xsize - 1,
+                    "opposite" : 0,
+                    "move" : 1,
+                    "compute" : (x, y, me) => x + y * me.xsize
+                }
                 select.compute = (x,y,me) => x + y * me.xsize
                 result = test(this, select)
                 this.currentx = select.position
@@ -144,15 +170,19 @@ export default class PacMan {
                 this.ycell = select.area_i
                 break
             case 'top':
-                select.position_i = this.currentx
-                select.limit_i = this.xlength
-                select.position = this.currenty
-                select.limit = this.ylength
-                select.isReachBorder = (select, me) => 
-                    select.position == 0
-                select.opposite = me.ysize - 1
-                select.move = -1
-                select.compute = (x,y,me) => y + x * me.xsize
+                select = {
+                    "position_i" : this.currentx,
+                    "area_i" : this.xcell,
+                    "limit_i" : this.xlength,
+                    "position" : this.currenty,
+                    "area" : this.ycell,
+                    "limit" : this.ylength,
+                    "isReachBorder" : (select, me) => 
+                        select.position == 0,
+                    "opposite" : this.ysize - 1,
+                    "move" : -1,
+                    "compute" : (x, y, me) => y + x * me.xsize
+                }
                 result = test(this, select)
                 this.currenty = select.position
                 this.currentx = select.position_i
@@ -160,15 +190,19 @@ export default class PacMan {
                 this.xcell = select.area_i
                 break
             case 'bottom':
-                select.position_i = this.currentx
-                select.limit_i = this.xlength
-                select.position = this.currenty
-                select.limit = this.ylength
-                select.isReachBorder = (select, me) => 
-                    select.position == me.ysize - 1
-                select.opposite = 0
-                select.move = 1
-                select.compute = (x,y,me) => y + x * me.xsize
+                select = {
+                    "position_i" : this.currentx,
+                    "area_i" : this.xcell,
+                    "limit_i" : this.xlength,
+                    "position" : this.currenty,
+                    "area" : this.ycell,
+                    "limit" : this.ylength,
+                    "isReachBorder" : (select, me) => 
+                        select.position == me.ysize - 1,
+                    "opposite" : 0,
+                    "move" : 1,
+                    "compute" : (x, y, me) => y + x * me.xsize
+                }
                 result = test(this, select)
                 this.currenty = select.position
                 this.currentx = select.position_i
@@ -180,18 +214,120 @@ export default class PacMan {
     }
     
     move() {
-        if (this.test()) {
+        this.canMove = this.test()
+        let select
+        if (this.canMove) {
+            switch(this.currentOrientation) {
+                case "left":
+                    select = {
+                        "position" : this.currentx,
+                        "limit" : this.xlength,
+                        "isReachBorder" : (me, center) =>
+                            center <= me.xlength / 2,
+                        "oppositePosition" : this.xsize * this.xlength - this.xlength / 2,
+                        "oppositeScrolling" : (position, me) => {
+                            me.xscroll = position
+                            window.scroll(me.xscroll, me.yscroll)
+                        },
+                        "move" : -this.step,
+                        "updateScrolling" : me => {
+                            let viewport_inf = me.xscroll + screen.availWidth / 3
+                            let viewport_sup = (me.xscroll + screen.availWidth) * 3 / 4
+                            if (viewport_inf > me.currentx || viewport_sup <= me.currentx) {
+                                me.xscroll = me.currentx - 2 * me.xlength
+                                window.scroll(me.xscroll, me.yscroll)
+                            }
+                        }
+                    }
+                    move(this, select)
+                    this.currentx = select.position
+                    break
+                case "right":
+                    select = {
+                        "position" : this.currentx,
+                        "limit" : this.xlength,
+                        "isReachBorder" : (me, center) =>
+                            center >= me.xsize * me.xlength - me.xlength / 2,
+                        "oppositePosition" : 0,
+                        "oppositeScrolling" : (position, me) => {
+                            me.xscroll = 0
+                            window.scroll(me.xscroll, me.yscroll)
+                        },
+                        "move" : this.step,
+                        "updateScrolling" : me => {
+                            let viewport_inf = me.xscroll + screen.availWidth / 3
+                            let viewport_sup = (me.xscroll + screen.availWidth) * 3 / 4
+                            if (viewport_inf > me.currentx || viewport_sup <= me.currentx) {
+                                me.xscroll = me.currentx - 2 * me.xlength
+                                window.scroll(me.xscroll, me.yscroll)
+                            }
+                        }
+                    }
+                    move(this, select)
+                    this.currentx = select.position
+                    break
+                case "top":
+                    select = {
+                        "position" : this.currenty,
+                        "limit" : this.ylength,
+                        "isReachBorder" : (me, center) =>
+                            center <= me.ylength / 2,
+                        "oppositePosition" : this.ysize * this.ylength - this.ylength / 2,
+                        "oppositeScrolling" : (position, me) => {
+                            me.yscroll = position
+                            window.scroll(me.xscroll, me.yscroll)
+                        },
+                        "move" : -this.step,
+                        "updateScrolling" : me => {
+                            let viewport_inf = me.yscroll + screen.availHeight / 3
+                            let viewport_sup = (me.yscroll + screen.availHeight) * 3 / 4
+                            if (viewport_inf > me.currenty || viewport_sup <= me.currenty) {
+                                me.yscroll = me.currenty - 2 * me.ylength
+                                window.scroll(me.xscroll, me.yscroll)
+                            }
+                        }
+                    }
+                    move(this, select)
+                    this.currenty = select.position
+                    break
+                case "bottom":
+                    select = {
+                        "position" : this.currenty,
+                        "limit" : this.ylength,
+                        "isReachBorder" : (me, center) =>
+                            center >= this.ysize * this.ylength - this.ylength / 2,
+                        "oppositePosition" : 0,
+                        "oppositeScrolling" : (position, me) => {
+                            me.yscroll = position
+                            window.scroll(me.xscroll, me.yscroll)
+                        },
+                        "move" : this.step,
+                        "updateScrolling" : me => {
+                            let viewport_inf = me.yscroll + screen.availHeight / 3
+                            let viewport_sup = (me.yscroll + screen.availHeight) * 3 / 4
+                            if (viewport_inf > me.currenty || viewport_sup <= me.currenty) {
+                                me.yscroll = me.currenty - 2 * me.ylength
+                                window.scroll(me.xscroll, me.yscroll)
+                            }
+                        }
+                    }
+                    move(this, select)
+                    this.currenty = select.position
+                    break
+            }
         }
     }
 
     draw(context) {
-        context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
-                          this.previousy + this.ylength / 8 - this.step + this.margin.top,
-                          this.xlength / 1.3 + this.step * 2,
-                          this.ylength / 1.3 + this.step * 2)
-        context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
-                          this.currentx + this.xsize / 8 + this.margin.left,
-                          this.currenty + this.ysize / 8 + this.margin.top, this.xsize / 1.3, this.ysize / 1.3)
+        if (this.canMove) {
+            context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
+                this.previousy + this.ylength / 8 - this.step + this.margin.top,
+                this.xlength / 1.1 + this.step * 2,
+                this.ylength / 1.1 + this.step * 2)
+context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
+                this.currentx + this.xlength / 8 + this.margin.left,
+                this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
+        }
         if (this.grid[ this.xcell + this.ycell * this.xsize] == "CAKE") {
             let p = new Audio("PacMan.wav")
             p.load()
