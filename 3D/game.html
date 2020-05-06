@@ -55,7 +55,7 @@
                     "right" : 30,
                     "top" : 30,
                     "bottom" : 30
-                }, board.getGrid(), 4, 6, 3 )
+                }, board.getGrid(), 0, 1, 8 )
                 let ghosts = [ new Ghost("purple"), new Ghost("red"), new Ghost("blue"), new Ghost("green") ]
                 let domBanner = document.getElementById("banner")
                 let loop = new Loop( pacman, ghosts, 17, 27, 30, 30, {
@@ -71,14 +71,15 @@
         <script nomodule>
             Your browser does not support modules
         </script>
+        <canvas id="dom-board" class="board"></canvas>
+        <canvas id="dom-game" class="game"></canvas>
         <div class="banner" id="banner"><img
             style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div
             style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px"
             src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img
             style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div
             class="counter" id="counter"></div><br/><div id="score" style="float:right;overflow:hidden"></div>
-        <canvas id="dom-board" class="board"></canvas>
-        <canvas id="dom-game" class="game"></canvas>
+        <div id="module" style="display:none"/>
         <br/>
     </body>
 </html>

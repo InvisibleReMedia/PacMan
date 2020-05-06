@@ -1,4 +1,9 @@
 
+function getModule() {
+    return document.getElementById("module")
+}
+
+
 function loadImages(resolve, reject) {
     let imageCounter = 0
     let pacmanImages = []
@@ -43,42 +48,6 @@ function selectCurrentImage(eating, orientation, images) {
     return images[orientation][eating.toString()]
 }
 
-
-function test(me, select) {
-    if (me.previousOrientation != me.currentOrientation) {
-        if (select.position_i % select.limit_i <= select.limit_i / 2) {
-            select.position_i -= select.position_i % select.limit_i
-        } else {
-            select.position_i += select.position_i - select.position_i % select.limit_i
-        }
-        select.area_i = (select.position_i - select.position_i % select.limit_i) / select.limit_i
-        me.previousOrientation = me.currentOrientation
-    }
-    if (select.position % select.limit < select.limit / 2) {
-        select.area = (select.position - select.position % select.limit) / select.limit
-    }
-    let nextArea
-    if (select.isReachBorder(select, me))
-        nextArea = select.opposite
-    else
-        nextArea = select.area + select.move
-    if (me.grid[select.compute(nextArea, select.area_i, me)] == "WALL") {
-        select.position = select.position - select.position % select.limit
-        return false
-    } else
-        return true
-}
-
-function move(me, select) {
-    let center = select.position + select.limit / 8 + select.limit / 1.1 / 2;
-    if (select.isReachBorder(me, center)) {
-        select.position = select.oppositePosition
-        select.oppositeScrolling(select.position, me)
-    } else
-        select.position += select.move
-    select.updateScrolling(me)
-}
-
 export default class PacMan {
 
 
@@ -92,14 +61,17 @@ export default class PacMan {
     // starty : case y départ
     // step : pas en px
     constructor(xsize, ysize, xlength, ylength, margin, grid, startx, starty, step) {
+        getModule().pacman = this
         this.xsize = xsize
         this.ysize = ysize
         this.xlength = xlength
         this.ylength = ylength
         this.margin = margin
         this.grid = grid
-        this.startx = startx * xlength + this.margin.left
-        this.starty = starty * ylength + this.margin.top
+        this.startx = startx * xlength
+        this.starty = starty * ylength
+        this.destinationx = (startx + 1) * xlength
+        this.destinationy = starty * ylength
         this.currentx = this.startx
         this.currenty = this.starty
         this.step = step
@@ -121,222 +93,171 @@ export default class PacMan {
         this.previousOrientation = this.currentOrientation
         this.currentOrientation = orientation
     }
-
-    test() {
-        let select
-        let result
-        this.previousx = this.currentx
-        this.previousy = this.currenty
+    
+    searchNextDestination() {
+        let nextArea
+        let areax = (this.currentx - this.currentx % this.xlength) / this.xlength
+        let areay = (this.currenty - this.currenty % this.ylength) / this.ylength
         switch(this.currentOrientation) {
             case 'left':
-                select = {
-                    "position_i" : this.currenty,
-                    "area_i" : this.ycell,
-                    "limit_i" : this.ylength,
-                    "position" : this.currentx,
-                    "area" : this.xcell,
-                    "limit" : this.xlength,
-                    "isReachBorder" : (select, me) =>
-                        select.position == 0,
-                    "opposite" : this.xsize - 1,
-                    "move" : -1,
-                    "compute" : (x, y, me) => x + y * me.xsize
-                }
-                result = test(this, select)
-                this.currentx = select.position
-                this.currenty = select.position_i
-                this.xcell = select.area
-                this.ycell = select.area_i
+                if (areax == 0)
+                    nextArea = this.xsize - 1
+                else
+                    nextArea = areax - 1
+                if (this.grid[ nextArea + areay * this.xsize ] != 'WALL') {
+                    this.destinationx = nextArea * this.xlength
+                    this.canMove = true
+                } else
+                    this.canMove = false
                 break
             case 'right':
-                select = {
-                    "position_i" : this.currenty,
-                    "area_i" : this.ycell,
-                    "limit_i" : this.ylength,
-                    "position" : this.currentx,
-                    "area" : this.xcell,
-                    "limit" : this.xlength,
-                    "isReachBorder" : (select, me) =>
-                        select.position == me.xsize - 1,
-                    "opposite" : 0,
-                    "move" : 1,
-                    "compute" : (x, y, me) => x + y * me.xsize
-                }
-                select.compute = (x,y,me) => x + y * me.xsize
-                result = test(this, select)
-                this.currentx = select.position
-                this.currenty = select.position_i
-                this.xcell = select.area
-                this.ycell = select.area_i
+                if (areax == this.xsize - 1)
+                    nextArea = 0
+                else
+                    nextArea = areax + 1
+                if (this.grid[ nextArea + areay * this.xsize ] != 'WALL') {
+                    this.destinationx = nextArea * this.xlength
+                    this.canMove = true
+                } else
+                    this.canMove = false
                 break
             case 'top':
-                select = {
-                    "position_i" : this.currentx,
-                    "area_i" : this.xcell,
-                    "limit_i" : this.xlength,
-                    "position" : this.currenty,
-                    "area" : this.ycell,
-                    "limit" : this.ylength,
-                    "isReachBorder" : (select, me) => 
-                        select.position == 0,
-                    "opposite" : this.ysize - 1,
-                    "move" : -1,
-                    "compute" : (x, y, me) => y + x * me.xsize
-                }
-                result = test(this, select)
-                this.currenty = select.position
-                this.currentx = select.position_i
-                this.ycell = select.area
-                this.xcell = select.area_i
+                if (areay == 0)
+                    nextArea = this.ysize - 1
+                else
+                    nextArea = areay - 1
+                if (this.grid[ areax + nextArea * this.xsize ] != 'WALL') {
+                    this.destinationy = nextArea * this.ylength
+                    this.canMove = true
+                } else
+                    this.canMove = false
                 break
             case 'bottom':
-                select = {
-                    "position_i" : this.currentx,
-                    "area_i" : this.xcell,
-                    "limit_i" : this.xlength,
-                    "position" : this.currenty,
-                    "area" : this.ycell,
-                    "limit" : this.ylength,
-                    "isReachBorder" : (select, me) => 
-                        select.position == me.ysize - 1,
-                    "opposite" : 0,
-                    "move" : 1,
-                    "compute" : (x, y, me) => y + x * me.xsize
-                }
-                result = test(this, select)
-                this.currenty = select.position
-                this.currentx = select.position_i
-                this.ycell = select.area
-                this.xcell = select.area_i
+                if (areay == this.ysize - 1)
+                    nextArea = 0
+                else
+                    nextArea = areay + 1
+                if (this.grid[ areax + nextArea * this.xsize ] != 'WALL') {
+                    this.destinationy = nextArea * this.ylength
+                    this.canMove = true
+                } else
+                    this.canMove = false
                 break
         }
-        return result;
     }
-    
-    move() {
-        this.canMove = this.test()
-        let select
-        if (this.canMove) {
-            switch(this.currentOrientation) {
-                case "left":
-                    select = {
-                        "position" : this.currentx,
-                        "limit" : this.xlength,
-                        "isReachBorder" : (me, center) =>
-                            center <= me.xlength / 2,
-                        "oppositePosition" : this.xsize * this.xlength - this.xlength / 2,
-                        "oppositeScrolling" : (position, me) => {
-                            me.xscroll = position
-                            window.scroll(me.xscroll, me.yscroll)
-                        },
-                        "move" : -this.step,
-                        "updateScrolling" : me => {
-                            let viewport_inf = me.xscroll + screen.availWidth / 3
-                            let viewport_sup = (me.xscroll + screen.availWidth) * 3 / 4
-                            if (viewport_inf > me.currentx || viewport_sup <= me.currentx) {
-                                me.xscroll = me.currentx - 2 * me.xlength
-                                window.scroll(me.xscroll, me.yscroll)
-                            }
-                        }
-                    }
-                    move(this, select)
-                    this.currentx = select.position
-                    break
-                case "right":
-                    select = {
-                        "position" : this.currentx,
-                        "limit" : this.xlength,
-                        "isReachBorder" : (me, center) =>
-                            center >= me.xsize * me.xlength - me.xlength / 2,
-                        "oppositePosition" : 0,
-                        "oppositeScrolling" : (position, me) => {
-                            me.xscroll = 0
-                            window.scroll(me.xscroll, me.yscroll)
-                        },
-                        "move" : this.step,
-                        "updateScrolling" : me => {
-                            let viewport_inf = me.xscroll + screen.availWidth / 3
-                            let viewport_sup = (me.xscroll + screen.availWidth) * 3 / 4
-                            if (viewport_inf > me.currentx || viewport_sup <= me.currentx) {
-                                me.xscroll = me.currentx - 2 * me.xlength
-                                window.scroll(me.xscroll, me.yscroll)
-                            }
-                        }
-                    }
-                    move(this, select)
-                    this.currentx = select.position
-                    break
-                case "top":
-                    select = {
-                        "position" : this.currenty,
-                        "limit" : this.ylength,
-                        "isReachBorder" : (me, center) =>
-                            center <= me.ylength / 2,
-                        "oppositePosition" : this.ysize * this.ylength - this.ylength / 2,
-                        "oppositeScrolling" : (position, me) => {
-                            me.yscroll = position
-                            window.scroll(me.xscroll, me.yscroll)
-                        },
-                        "move" : -this.step,
-                        "updateScrolling" : me => {
-                            let viewport_inf = me.yscroll + screen.availHeight / 3
-                            let viewport_sup = (me.yscroll + screen.availHeight) * 3 / 4
-                            if (viewport_inf > me.currenty || viewport_sup <= me.currenty) {
-                                me.yscroll = me.currenty - 2 * me.ylength
-                                window.scroll(me.xscroll, me.yscroll)
-                            }
-                        }
-                    }
-                    move(this, select)
-                    this.currenty = select.position
-                    break
-                case "bottom":
-                    select = {
-                        "position" : this.currenty,
-                        "limit" : this.ylength,
-                        "isReachBorder" : (me, center) =>
-                            center >= this.ysize * this.ylength - this.ylength / 2,
-                        "oppositePosition" : 0,
-                        "oppositeScrolling" : (position, me) => {
-                            me.yscroll = position
-                            window.scroll(me.xscroll, me.yscroll)
-                        },
-                        "move" : this.step,
-                        "updateScrolling" : me => {
-                            let viewport_inf = me.yscroll + screen.availHeight / 3
-                            let viewport_sup = (me.yscroll + screen.availHeight) * 3 / 4
-                            if (viewport_inf > me.currenty || viewport_sup <= me.currenty) {
-                                me.yscroll = me.currenty - 2 * me.ylength
-                                window.scroll(me.xscroll, me.yscroll)
-                            }
-                        }
-                    }
-                    move(this, select)
-                    this.currenty = select.position
-                    break
-            }
+
+    goToDestination() {
+        this.previousx = this.currentx
+        this.previousy = this.currenty
+        // changement d'orientation
+        if (this.previousOrientation != this.currentOrientation) {
+            // repositionnement
+            if (this.currentx % this.xlength <= this.xlength / 2)
+                this.currentx -= this.currentx % this.xlength
+            else
+                this.currentx += this.xlength - this.currentx % this.xlength
+            if (this.currenty % this.ylength <= this.ylength / 2)
+                this.currenty -= this.currenty % this.ylength
+            else
+                this.currenty += this.ylength - this.currenty % this.ylength
+            this.destinationx = this.currentx
+            this.destinationy = this.currenty
+            this.searchNextDestination()
+            this.previousOrientation = this.currentOrientation
+        }
+        switch(this.currentOrientation) {
+            case 'left':
+                if (Math.abs(this.currentx - this.destinationx) <= this.step) {
+                    this.currentx = this.destinationx
+                    this.searchNextDestination()
+                }
+                else
+                    if (this.currentx <= 0)
+                        this.currentx = this.xsize * this.xlength - this.xlength
+                    else
+                        this.currentx -= this.step
+               break
+            case 'right':
+                if (Math.abs(this.currentx - this.destinationx) <= this.step) {
+                    this.currentx = this.destinationx
+                    this.searchNextDestination()
+                }
+                else
+                    if (this.currentx >= this.xsize * this.xlength - this.xlength)
+                        this.currentx = 0
+                    else
+                        this.currentx += this.step
+                break
+            case 'top':
+                if (Math.abs(this.currenty - this.destinationy) <= this.step) {
+                    this.currenty = this.destinationy
+                    this.searchNextDestination()
+                }
+                else
+                    if (this.currenty <= 0)
+                        this.currenty = this.ysize * this.ylength - this.ylength
+                    else
+                        this.currenty -= this.step
+                break
+            case 'bottom':
+                if (Math.abs(this.currenty - this.destinationy) <= this.step) {
+                    this.currenty = this.destinationy
+                    this.searchNextDestination()
+                }
+                else
+                    if (this.currenty >= this.ysize * this.ylength - this.ylength)
+                        this.currenty = 0
+                    else
+                        this.currenty += this.step
+                    
+                break
+        }
+        let viewport = {
+            "left" : window.scrollX,
+            "right" : (window.scrollX + screen.availWidth) * 3/4,
+            "top" : window.scrollY,
+            "bottom" : (window.scrollY + screen.availHeight) * 3/4
+        }
+        if (viewport.left < this.currentx || viewport.right > this.currentx) {
+            window.scroll(this.currentx - 2 * this.xlength, window.scrollY)
+        }
+        if (viewport.top < this.currenty || viewport.bottom > this.currenty) {
+            let banner = document.getElementById("banner")
+            window.scroll(window.scrollX, this.currenty - 4 * this.ylength)
+            banner.style.top = `${window.scrollY}px`
         }
     }
 
     draw(context) {
-        if (this.canMove) {
+        if (this.previousx != this.currentx || this.previousy != this.currenty) {
             context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
                 this.previousy + this.ylength / 8 - this.step + this.margin.top,
                 this.xlength / 1.1 + this.step * 2,
                 this.ylength / 1.1 + this.step * 2)
-context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
+            context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
                 this.currentx + this.xlength / 8 + this.margin.left,
                 this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
+            this.previousx = this.currentx
+            this.previousy = this.currenty
         }
-        if (this.grid[ this.xcell + this.ycell * this.xsize] == "CAKE") {
+        let areax, areay
+        if (this.currentx % this.xlength <= this.xlength / 2)
+            areax = (this.currentx - this.currentx % this.xlength) / this.xlength
+        else
+            areax = (this.currentx + this.xlength - this.currentx % this.xlength) / this.xlength
+        if (this.currenty % this.ylength <= this.ylength / 2)
+            areay = (this.currenty - this.currenty % this.ylength) / this.ylength
+        else
+            areay = (this.currenty + this.ylength - this.currenty % this.ylength) / this.ylength
+        if (this.grid[ areax + areay * this.xsize] == "CAKE") {
             let p = new Audio("PacMan.wav")
             p.load()
             var playPromise = p.play()
             if (playPromise !== undefined) {
                 playPromise.then(_ => {}).catch(error => {})
             }
-            this.grid[this.xcell + this.ycell * this.xsize] = "EMPTY"
-            window.redrawBoard()
+            this.grid[ areax + areay * this.xsize ] = "EMPTY"
+            getModule().board.redrawBoard()
         }
     }
 

@@ -1,5 +1,9 @@
 /* copyright @2020 */
 
+function getModule() {
+    return document.getElementById("module")
+}
+
 function loadImages(resolve, reject) {
     let imageCounter = 0
     let wall = new Image()
@@ -29,6 +33,7 @@ function loadImages(resolve, reject) {
 export default class Board {
 
     constructor( level ) {
+        getModule().board = this
         this.cakeCounter = 0
         this.level = level
         this.imageLoaded = false
@@ -134,12 +139,12 @@ export default class Board {
                 this.imageLoaded = true
                 this.OnDraw()
             } ).catch( error => console.log(error) );
-            window.redrawBoard = _ => {
+            getModule().board.redrawBoard = _ => {
                 this.clearDraw()
                 this.OnDraw()
             }
         } else {
-            this.OnDraw()
+            getModule().board.redrawBoard()
         }
 
     }

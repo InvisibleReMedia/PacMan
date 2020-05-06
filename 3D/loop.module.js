@@ -1,5 +1,9 @@
 const maximumState = 10
 
+function getModule() {
+    return document.getElementById("module")
+}
+
 function loadImages(resolve, reject) {
     let imageCounter = 0
     let pacmanImages = []
@@ -37,6 +41,7 @@ function loadImages(resolve, reject) {
 export default class Loop {
 
     constructor(pacman, ghosts, xsize, ysize, xlength, ylength, margin, banner) {
+        getModule().loop = this
         this.xsize = xsize
         this.ysize = ysize
         this.xlength = xlength
@@ -48,7 +53,7 @@ export default class Loop {
         this.ghosts = ghosts
     }
 
-    start(canvas, interval = 0.000001) {
+    start(canvas, interval = 1) {
         this.canvas = canvas
         canvas.width = this.xsize * this.xlength + this.margin.left + this.margin.right
         canvas.height = this.ysize * this.ylength + this.margin.top + this.margin.bottom
@@ -63,17 +68,6 @@ export default class Loop {
         this.pacman.init(setCountReady)
         this.ghosts.forEach( element => 
             element.init(setCountReady) )
-        window.addEventListener('scroll', e => {
-            if (this.banner) {
-                if (window.scrollX < this.canvas.width - this.banner.offsetWidth) {
-                    this.banner.style.left = window.scrollX + "px";
-                }
-                else {
-                    this.banner.style.left = (this.canvas.width - this.banner.offsetWidth) + "px";
-                }
-                this.banner.style.top = window.scrollY + "px";
-            }
-        })
         window.addEventListener('keydown', e => {
             if (e.keyCode == 37) {
                 this.pacman.setOrientation("left")
@@ -96,10 +90,10 @@ export default class Loop {
         switch(me.state) {
 
             case 0:
-                pacman.move()
+                pacman.draw(me.drawingContext)
                 break
             case 1:
-                pacman.draw(me.drawingContext)
+                pacman.goToDestination()
                 break
             case 2:
                 ghosts.forEach(element => {
@@ -125,6 +119,5 @@ export default class Loop {
             ++me.state
         else
             me.state = 0
-        console.log(me.state)
     }
 } 
