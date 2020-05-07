@@ -4,40 +4,6 @@ function getModule() {
     return document.getElementById("module")
 }
 
-function loadImages(resolve, reject) {
-    let imageCounter = 0
-    let pacmanImages = []
-    let pacmanSources = [
-        "pacman1_bottom.png",
-        "pacman1_left.png",
-        "pacman1_right.png",
-        "pacman1_top.png",
-        "pacman2_bottom.png",
-        "pacman2_left.png",
-        "pacman2_right.png",
-        "pacman2_top.png"
-    ]
-    let errorLoading = e => {
-        reject(e)
-    }
-    let setCounter = e => {
-        ++imageCounter
-        if (imageCounter == pacmanImages.length) {
-            // all images have been loaded
-            resolve({
-                "pacmanCloser" : pacmanCloser,
-                "pacmanOpener" : pacmanOpener
-            })
-        }
-    }
-    for(let x = 0; x < 8; ++x) {
-        pacmanImages[x] = new Image()
-        pacmanImages[x].addEventListener( "load", setCounter )
-        pacmanImages[x].addEventListener( "error", errorLoading ) 
-        pacmanImages[x].src = pacmanSources[x]
-    }
-}
-
 function numbers(n) {
 	let z = document.getElementById("score");
 	let h = "";
@@ -70,7 +36,7 @@ export default class Loop {
         this.status = "start"
     }
 
-    start(canvas, interval = 1) {
+    start(canvas, interval = 0.001) {
         this.canvas = canvas
         canvas.width = this.xsize * this.xlength + this.margin.left + this.margin.right
         canvas.height = this.ysize * this.ylength + this.margin.top + this.margin.bottom
@@ -130,7 +96,7 @@ export default class Loop {
                 break
             case 2:
                 ghosts.forEach(element => {
-                    element.move()
+                    element.goToDestination()
                 })
                 break
             case 3:

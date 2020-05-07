@@ -55,8 +55,36 @@
                     "right" : 30,
                     "top" : 30,
                     "bottom" : 30
-                }, board.getGrid(), 0, 1, 8 )
-                let ghosts = [ new Ghost("purple"), new Ghost("red"), new Ghost("blue"), new Ghost("green") ]
+                }, board.getGrid(), 0, 1, 3 )
+                let ghosts = [ new Ghost(
+                    "purple",
+                    17, 27, 30, 30, {
+                        "left" : 30,
+                        "right" : 30,
+                        "top" : 30,
+                        "bottom" : 30
+                    }, board.getGrid(), 10, 15), new Ghost(
+                    "red",
+                    17, 27, 30, 30, {
+                        "left" : 30,
+                        "right" : 30,
+                        "top" : 30,
+                        "bottom" : 30
+                    }, board.getGrid(), 10, 15), new Ghost(
+                    "blue",
+                    17, 27, 30, 30, {
+                        "left" : 30,
+                        "right" : 30,
+                        "top" : 30,
+                        "bottom" : 30
+                    }, board.getGrid(), 10, 15), new Ghost(
+                    "green",
+                    17, 27, 30, 30, {
+                        "left" : 30,
+                        "right" : 30,
+                        "top" : 30,
+                        "bottom" : 30
+                    }, board.getGrid(), 1, 15) ]
                 let domBanner = document.getElementById("banner")
                 let loop = new Loop( pacman, ghosts, 17, 27, 30, 30, {
                     "left" : 30,
