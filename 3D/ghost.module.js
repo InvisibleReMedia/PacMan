@@ -204,4 +204,17 @@ export default class Ghost {
         this.thrill = !this.thrill
     }
 
+    fear() {
+
+        let pacman = getModule().pacman
+        let pacmanx = (pacman.currentx - pacman.currentx % pacman.xlength) / pacman.xlength
+        let pacmany = (pacman.currenty - pacman.currenty % pacman.ylength) / pacman.ylength
+
+        let ghostx = (this.currentx - this.currentx % this.xlength) / this.xlength
+        let ghosty = (this.currenty - this.currenty % this.ylength) / this.ylength
+
+        if (pacmanx == ghostx && pacmany == ghosty)
+            getModule().loop.setStatus("startblink")
+    }
+
 }

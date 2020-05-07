@@ -229,17 +229,17 @@ export default class PacMan {
     }
 
     draw(context) {
-        if (this.previousx != this.currentx || this.previousy != this.currenty) {
-            context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
-                this.previousy + this.ylength / 8 - this.step + this.margin.top,
-                this.xlength / 1.1 + this.step * 2,
-                this.ylength / 1.1 + this.step * 2)
-            context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
-                this.currentx + this.xlength / 8 + this.margin.left,
-                this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
-            this.previousx = this.currentx
-            this.previousy = this.currenty
-        }
+        getModule().view.setCameraPosition(this.currentx, this.currenty, this.currentOrientation)
+        context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
+            this.previousy + this.ylength / 8 - this.step + this.margin.top,
+            this.xlength / 1.1 + this.step * 2,
+            this.ylength / 1.1 + this.step * 2)
+        context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
+            this.currentx + this.xlength / 8 + this.margin.left,
+            this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
+        this.previousx = this.currentx
+        this.previousy = this.currenty
+
         let areax, areay
         if (this.currentx % this.xlength <= this.xlength / 2)
             areax = (this.currentx - this.currentx % this.xlength) / this.xlength
@@ -271,8 +271,14 @@ export default class PacMan {
         this.eating = !this.eating
     }
 
+    startblink() {
+        this.blinkCount = 0
+        this.blinkState = false
+        getModule().loop.setStatus("blink")
+    }
+
     blink(context) {
-		if (!x.blinkState) {
+		if (!this.blinkState) {
             context.clearRect(this.currentx + this.xlength / 8 - this.step + this.margin.left,
                 this.currenty + this.ylength / 8 - this.step + this.margin.top,
                 this.xlength / 1.1 + this.step * 2,
@@ -283,8 +289,8 @@ export default class PacMan {
                 this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
 		}
 		this.blinkState = !this.blinkState;
-		++x.blinkCount;
-		if (x.blinkCount > 10) {
+		++this.blinkCount;
+		if (this.blinkCount > 50) {
             getModule().loop.setStatus("reBirth")
 		}
     }
@@ -293,17 +299,17 @@ export default class PacMan {
         let is_wall, near_ghost, px, py
 		do {
 			near_ghost = false
-			px = Math.floor(Math.random() * x.xsize)
-            py = Math.floor(Math.random() * x.ysize)
+			px = Math.floor(Math.random() * this.xsize)
+            py = Math.floor(Math.random() * this.ysize)
             let ghosts = getModule().loop.ghosts
 			for(let u = 0; u < ghosts.length; ++u) {
                 let ghost = ghosts[u]
-				let ghost_x = (ghost.currentx - ghost.currentx % this.xlength) / this.xlength
-				let ghost_y = (ghost.currenty - ghost.currenty % x.ylength) / x.ylength
+				let ghost_x = (ghost.currentx - ghost.currentx % ghost.xlength) / ghost.xlength
+				let ghost_y = (ghost.currenty - ghost.currenty % ghost.ylength) / ghost.ylength
 				if (Math.abs(ghost_x - px) <= 5 && Math.abs(ghost_y - py) <= 5)
 					near_ghost = true
 			}
-			is_wall = x.cells[px + py * x.xsize] == "WALL"
+			is_wall = this.grid[px + py * this.xsize] == "WALL"
         } while(near_ghost || is_wall)
         
         context.clearRect(this.currentx + this.xlength / 8 - this.step + this.margin.left,
@@ -312,6 +318,9 @@ export default class PacMan {
             this.ylength / 1.1 + this.step * 2)
         this.currentx = this.destinationx = px * this.xlength;
         this.currenty = this.destinationy = py * this.ylength;
+        context.drawImage(selectCurrentImage(this.eating, this.currentOrientation, this.images),
+            this.currentx + this.xlength / 8 + this.margin.left,
+            this.currenty + this.ylength / 8 + this.margin.top, this.xlength / 1.1, this.ylength / 1.1)
         getModule().loop.setStatus("running")
     }
 

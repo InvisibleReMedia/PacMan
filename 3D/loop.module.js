@@ -86,33 +86,48 @@ export default class Loop {
                     pacman.draw(drawingContext)
                 else if (status == "win")
                     pacman.win()
+                else if (status == "startblink")
+                    pacman.startblink()
                 else if (status == "blink")
                     pacman.blink(drawingContext)
                 else if (status == "reBirth")
                     pacman.reBirth(drawingContext)
                 break
             case 1:
-                pacman.goToDestination()
+                if (status == "running")
+                    pacman.goToDestination()
                 break
             case 2:
-                ghosts.forEach(element => {
-                    element.goToDestination()
-                })
+                if (status == "running")
+                    ghosts.forEach(element => {
+                        element.goToDestination()
+                    })
                 break
             case 3:
-                ghosts.forEach(element => {
-                    element.draw(drawingContext)
-                })
+                if (status == "running")
+                    ghosts.forEach(element => {
+                        element.draw(drawingContext)
+                    })
                 break
             case 4:
-                pacman.eat()
+                if (status == "running")
+                    pacman.eat()
                 break
             case 5:
-                ghosts.forEach(element => {
-                    element.thriller()
-                })
+                if (status == "running")
+                    ghosts.forEach(element => {
+                        element.thriller()
+                    })
                 break
-
+            case 6:
+                if (status == "running")
+                    ghosts.forEach(element => {
+                        element.fear()
+                    })
+                break
+            case 7:
+                getModule().view.render()
+                break
         }
         if (me.state < maximumState)
             ++me.state
@@ -122,6 +137,6 @@ export default class Loop {
 
     increaseScore() {
         ++this.score
-        numbers(this.score)
+        numbers(this.score * 100)
     }
 } 
