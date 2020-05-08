@@ -1,4 +1,5 @@
 import * as THREE from './build/three.module.js';
+import { CinematicCamera } from './x/jsm/cameras/CinematicCamera.js';
 import { OBJLoader } from './x/jsm/loaders/OBJLoader.js';
 
 function getModule() {
@@ -77,14 +78,16 @@ export default class View3D {
         geometry = new THREE.BoxBufferGeometry( this.xlength, zsize, 1 );
         for(let x = 0; x < this.xsize; ++x) {
             object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-                color : 0xff0000
+                color : 0xff0000,
+                map : this.textureWall
             }));
             object.position.x = x * this.xlength;
             object.position.y = 0;
             object.position.z = -this.ylength;
             this.scene.add( object );
             object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-                color : 0xff0000
+                color : 0xff0000,
+                map : this.textureWall
             }));
             object.position.x = x * this.xlength;
             object.position.y = 0;
@@ -95,14 +98,16 @@ export default class View3D {
         geometry = new THREE.BoxBufferGeometry( 1, zsize, this.ylength );
         for(var z = 0; z < this.ysize; ++z) {
             object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-                color : 0xff0000
+                color : 0xff0000,
+                map : this.textureWall
             }));
             object.position.x = -this.xlength;
             object.position.y = 0;
             object.position.z = z * this.ylength;
             this.scene.add( object );
             object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-                color : 0xff0000
+                color : 0xff0000,
+                map : this.textureWall
             }));
             object.position.x = this.xsize * this.xlength;
             object.position.y = 0;
@@ -119,7 +124,8 @@ export default class View3D {
 
                     geometry = new THREE.BoxBufferGeometry( this.xlength, zsize, this.ylength );
                     object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( {
-                        color : color
+                        color : color,
+                        map : this.textureWall
                     }));
                     object.position.x = x * this.xlength;
                     object.position.y = 0;
@@ -138,8 +144,11 @@ export default class View3D {
 
     }
 
-    setCameraPosition( x, y, orientation ) {
+    setCameraPosition(  ) {
 
+        let x = getModule().pacman.currentx
+        let y = getModule().pacman.currenty
+        let orientation = getModule().pacman.currentOrientation
         this.camera.position.set(x, 0, y)
         switch(orientation) {
             case 'left':
@@ -190,14 +199,22 @@ export default class View3D {
 
     addTextures() {
 
-        this.textureCiel = new THREE.TextureLoader().load( "ciel-gris.jpg" );
+        this.textureCiel = new THREE.TextureLoader().load( "ciel-bleu.jpg" )
+        this.textureWall = new THREE.TextureLoader().load( "prairie.jpg" )
+
+    }
+
+    animate() {
+
+        getModule().view.render()
+        requestAnimationFrame( getModule().view.animate )
 
     }
 
     render() {
 
-        this.renderer.clear();
-        this.renderer.render( this.scene, this.camera );
+        this.renderer.clear()
+        this.renderer.render( this.scene, this.camera )
 
 
     }

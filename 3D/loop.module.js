@@ -45,8 +45,11 @@ export default class Loop {
         let countReady = 0
         let setCountReady = () => {
             ++countReady
-            if (countReady == 1 + this.ghosts.length)
+            if (countReady == 1 + this.ghosts.length) {
+                getModule().ready = true
+                getModule().view.animate()
                 window.setInterval(this.play, interval, this)
+            }
         }
         this.pacman.init(setCountReady)
         this.ghosts.forEach( element => 
@@ -124,9 +127,6 @@ export default class Loop {
                     ghosts.forEach(element => {
                         element.fear()
                     })
-                break
-            case 7:
-                getModule().view.render()
                 break
         }
         if (me.state < maximumState)
