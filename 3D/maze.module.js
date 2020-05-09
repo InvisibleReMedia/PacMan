@@ -33,6 +33,21 @@ function loadImages(resolve, reject) {
     cake.src = "cake.png"
 }
 
+function selectCharacter(current, direction) {
+
+    let except = current.except
+    let value
+
+    do {
+
+        value = Math.floor(Math.random() * 13) + 1
+
+    } while(except[direction].indexOf(value) != -1)
+
+    return value
+
+}
+
 
 export default class Maze {
 
@@ -167,8 +182,8 @@ export default class Maze {
                 "except" : {
                     "left" : [ 2, 4, 6, 11 ],
                     "right" : [ 2, 3, 5, 12 ],
-                    "top" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 ],
-                    "bottom" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 ]
+                    "top" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 ],
+                    "bottom" : [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12 ]
                 }
             },
             {
@@ -191,7 +206,11 @@ export default class Maze {
                     "WALL", "ROAD", "ROAD",
                     "WALL", "ROAD", "WALL"
                 ],
-
+                "except" : {
+                    "top" : [ 1, 5, 6, 9, 10 ],
+                    "bottom" : [ 1, 3, 4, 8, 10 ],
+                    "right" : [ 2, 3, 5, 12, 13 ]
+                }
             },
             {
                 "id" : 13,
@@ -224,13 +243,18 @@ export default class Maze {
         ]
     }
 
-    makeMesh() {
+    makeMesh(options) {
 
         let mesh = {
             "value" : 14,
             "x" : 0,
             "y" : 0
         }
+        let withConstraints
+        if (typeof options !== "undefined" && typeof options.withConstraints !== "undefined")
+            withConstraints = options.withConstraints
+        else
+            withConstraints = false
         let positions = [ mesh ]
         let stack = []
         let stack_length = 0
@@ -246,14 +270,20 @@ export default class Maze {
         let current_right = 0
         let current_top = 0
         let current_bottom = 0
-        while(stack_position < stack_length && counter < 400) {
+        while(stack_position < stack_length && counter < 100) {
             ++counter
             let c = stack[stack_position]
             ++stack_position
             if (typeof c.left === "undefined") {
-                if (isUniquePosition(c.x - 1, c.y, positions)) {
+                let k = this.characters[c.value - 1]
+                if (isUniquePosition(c.x - 1, c.y, positions) && (!withConstraints || typeof k.except["left"] !== "undefined")) {
+                    let v
+                    if (withConstraints)
+                        v = selectCharacter(k, "left")
+                    else
+                        v = Math.floor(Math.random() * 14) + 1
                     c.left = {
-                        "value" : Math.floor(Math.random() * 14) + 1,
+                        "value" : v,
                         "x" : c.x - 1,
                         "y" : c.y
                     }
@@ -264,9 +294,15 @@ export default class Maze {
                 }
             }
             if (typeof c.right === "undefined") {
-                if (isUniquePosition(c.x + 1, c.y, positions)) {
+                let k = this.characters[c.value - 1]
+                if (isUniquePosition(c.x + 1, c.y, positions) && (!withConstraints || typeof k.except["right"] !== "undefined")) {
+                    let v
+                    if (withConstraints)
+                        v = selectCharacter(k, "right")
+                    else
+                        v = Math.floor(Math.random() * 14) + 1
                     c.right = {
-                        "value" : Math.floor(Math.random() * 14) + 1,
+                        "value" : v,
                         "x" : c.x + 1,
                         "y" : c.y
                     }
@@ -277,9 +313,15 @@ export default class Maze {
                 }
             }
             if (typeof c.top === "undefined") {
-                if (isUniquePosition(c.x, c.y - 1, positions)) {
+                let k = this.characters[c.value - 1]
+                if (isUniquePosition(c.x, c.y - 1, positions) && (!withConstraints || typeof k.except["top"] !== "undefined")) {
+                    let v
+                    if (withConstraints)
+                        v = selectCharacter(k, "top")
+                    else
+                        v = Math.floor(Math.random() * 14) + 1
                     c.top = {
-                        "value" : Math.floor(Math.random() * 14) + 1,
+                        "value" : v,
                         "x" : c.x,
                         "y" : c.y - 1
                     }
@@ -290,9 +332,15 @@ export default class Maze {
                 }
             }
             if (typeof c.bottom === "undefined") {
-                if (isUniquePosition(c.x, c.y + 1, positions)) {
+                let k = this.characters[c.value - 1]
+                if (isUniquePosition(c.x, c.y + 1, positions) && (!withConstraints || typeof k.except["bottom"] !== "undefined")) {
+                    let v
+                    if (withConstraints)
+                        v = selectCharacter(k, "bottom")
+                    else
+                        v = Math.floor(Math.random() * 14) + 1
                     c.bottom = {
-                        "value" : Math.floor(Math.random() * 14) + 1,
+                        "value" : v,
                         "x" : c.x,
                         "y" : c.y + 1
                     }

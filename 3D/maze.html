@@ -10,7 +10,9 @@
             import Maze from './maze.module.js'
 
             let m = new Maze()
-            let g = m.makeGrid(m.makeMesh())
+            let g = m.makeGrid(m.makeMesh({
+                "withConstraints" : true
+            }))
             m.draw(board, g)
         </script>
         <canvas id="board"></canvas>
