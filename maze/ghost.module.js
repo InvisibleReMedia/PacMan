@@ -45,7 +45,7 @@ function randomDestination(posx, posy, grid, xsize, ysize, range) {
             desty = 0
         else if (desty >= ysize)
             desty = ysize - 1
-    } while(grid[destx + desty * xsize] == "WALL")
+    } while(grid[destx][desty] == "WALL")
     return {
         "destx" : destx,
         "desty" : desty
@@ -182,7 +182,6 @@ export default class Ghost {
 
     draw(context) {
 
-        getModule().view.setGhostPosition(this.id, this.currentx * 2, this.currenty * 2)
         context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
                           this.previousy + this.xlength / 8 - this.step + this.margin.top,
                           this.xlength / 1.3 + this.step * 2,

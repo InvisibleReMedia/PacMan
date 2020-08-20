@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Maze</title>
+        <style>
+            .banner {
+                position : absolute;
+                left : 0px;
+                top : 0px;
+                z-index : 3;
+                border : 1px solid #d3d3d3;
+                background-color : #f1f2f1;
+                opacity : 0.7;
+            }
+            .board {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                z-index : 1;
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+            }
+            .game {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                margin-bottom : 0px;
+                z-index : 2;
+                border: 1px solid #d3d3d3;
+            }
+            .counter {
+                position : relative;
+                top : 10px;
+                left : -10px;
+                font-size : 10pt;
+                color : red;
+                float:right;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            import Maze from './maze.module.js'
+            import PacMan from './pacman.module.js'
+            import Ghost from './ghost.module.js'
+            import Loop from './loop.module.js'
+
+            let m = new Maze()
+            let g = m.makeGrid(m.makeMesh({
+                "withConstraints" : true
+            }))
+            m.draw(board, g)
+            let pacman = new PacMan( g.xsize, g.ysize, 10, 10, {
+                    "left" : 10,
+                    "right" : 0,
+                    "top" : 10,
+                    "bottom" : 0
+                }, g.grid, 0, 1, 3 )
+            let ghosts = [ new Ghost(0,
+                    "purple",
+                    g.xsize, g.ysize, 10, 10, {
+                        "left" : 10,
+                        "right" : 0,
+                        "top" : 10,
+                        "bottom" : 0
+                    }, g.grid, 1, 5), new Ghost(1,
+                    "red",
+                    g.xsize, g.ysize, 10, 10, {
+                        "left" : 10,
+                        "right" : 0,
+                        "top" : 10,
+                        "bottom" : 0
+                    }, g.grid, 1, 5), new Ghost(2,
+                    "blue",
+                    g.xsize, g.ysize, 10, 10, {
+                        "left" : 10,
+                        "right" : 0,
+                        "top" : 10,
+                        "bottom" : 0
+                    }, g.grid, 1, 5), new Ghost(3,
+                    "green",
+                    g.xsize, g.ysize, 10, 10, {
+                        "left" : 10,
+                        "right" : 0,
+                        "top" : 10,
+                        "bottom" : 0
+                    }, g.grid, 1, 5) ]
+            let domBanner = document.getElementById("banner")
+            let loop = new Loop( pacman, ghosts, g.xsize, g.ysize, 10, 10, {
+                "left" : 10,
+                "right" : 0,
+                "top" : 10,
+                "bottom" : 0
+            }, domBanner, board )
+            let domGame = document.getElementById("dom-game")
+            domGame.addEventListener("touchstart", function(e) {
+                generateKeyDown(e.touches[0].clientX, e.touches[0].clientY)
+            }, { "passive" : true } )
+            loop.start(domGame)
+        </script>
+        <canvas id="board" class="board"></canvas>
+        <canvas id="dom-game" class="game"></canvas>
+        <div class="banner" id="banner"><img
+            style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div
+            style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px"
+            src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img
+            style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div
+            class="counter" id="counter"></div><br/><div id="score" style="float:right;overflow:hidden;padding-top:20px"></div>
+        <img src="Bravo.gif" class="bravo" id="bravo" style="display:none"/>
+        <div id="module" style="display:none"/>
+    </body>
+</html>

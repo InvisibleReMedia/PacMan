@@ -72,10 +72,10 @@ export default class Board {
 
     getMargin() {
         return {
-            "left" : this.internalData.x_length,
-            "right" : this.internalData.x_length,
-            "top" : this.internalData.x_length,
-            "bottom" : this.internalData.x_length
+            "left" : 0,
+            "right" : 0,
+            "top" : 0,
+            "bottom" : 0
         }
     }
 
@@ -125,8 +125,8 @@ export default class Board {
         this.internalData.x_length = xl
         this.internalData.y_length = yl
     
-        canvas.width = (xsize + 2) * xl
-        canvas.height = (ysize + 2) * yl
+        canvas.width = xsize * xl
+        canvas.height = ysize * yl
 
         // copy data
         this.canvas = canvas

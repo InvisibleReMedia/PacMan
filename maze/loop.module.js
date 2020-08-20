@@ -47,7 +47,6 @@ export default class Loop {
             ++countReady
             if (countReady == 1 + this.ghosts.length) {
                 getModule().ready = true
-                getModule().view.animate()
                 window.setInterval(this.play, interval, this)
             }
         }

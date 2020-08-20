@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Le Pac Man Français</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+.circle {
+	height:70px;
+	width:70px;
+	border-radius:50%;
+	border:1px solid red;
+}
+.block {
+	width:70px;
+	height:90px;
+	margin:auto;
+}
+body {
+	position:absolute;
+	top:38%;
+	margin:0;
+	width:100%;
+	height:auto;
+}
+</style>
+<script language="JavaScript">
+function terminateLoad() {
+	if (imageCounter == 32 && scriptCounter == 3 && audioCounter == 1)
+		document.location = "2D/pacman.html";
+}
+function scriptLoaded() {
+	++scriptCounter;
+	terminateLoad();
+}
+function imageLoaded() {
+	++imageCounter;
+	terminateLoad();
+}
+function audioLoaded() {
+	++audioCounter;
+	terminateLoad();
+}
+function load() {
+	all_images = [];
+	imageCounter = 0;
+	scriptCounter = 0;
+	audioCounter = 0;
+	all_images[0] = new Image();
+	all_images[0].addEventListener("load", imageLoaded);
+	all_images[0].src = "2D/pacman1_left.png";
+	all_images[1] = new Image();
+	all_images[1].addEventListener("load", imageLoaded);
+	all_images[1].src = "2D/pacman1_right.png";
+	all_images[2] = new Image();
+	all_images[2].addEventListener("load", imageLoaded);
+	all_images[2].src = "2D/pacman1_top.png";
+	all_images[3] = new Image();
+	all_images[3].addEventListener("load", imageLoaded);
+	all_images[3].src = "2D/pacman1_bottom.png";
+	all_images[4] = new Image();
+	all_images[4].addEventListener("load", imageLoaded);
+	all_images[4].src = "2D/pacman2_left.png";
+	all_images[5] = new Image();
+	all_images[5].addEventListener("load", imageLoaded);
+	all_images[5].src = "2D/pacman2_right.png";
+	all_images[6] = new Image();
+	all_images[6].addEventListener("load", imageLoaded);
+	all_images[6].src = "2D/pacman2_top.png";
+	all_images[7] = new Image();
+	all_images[7].addEventListener("load", imageLoaded);
+	all_images[7].src = "2D/pacman2_bottom.png";
+	all_images[8] = new Image();
+	all_images[8].addEventListener("load", imageLoaded);
+	all_images[8].src = "2D/PACMAN_TITLE.png";
+	all_images[9] = new Image();
+	all_images[9].addEventListener("load", imageLoaded);
+	all_images[9].src = "2D/bravo.gif";
+	all_images[10] = new Image();
+	all_images[10].addEventListener("load", imageLoaded);
+	all_images[10].src = "2D/anim_explode.gif";
+	all_images[11] = new Image();
+	all_images[11].addEventListener("load", imageLoaded);
+	all_images[11].src = "2D/cake.png";
+	all_images[12] = new Image();
+	all_images[12].addEventListener("load", imageLoaded);
+	all_images[12].src = "2D/star.png";
+	all_images[13] = new Image();
+	all_images[13].addEventListener("load", imageLoaded);
+	all_images[13].src = "2D/ghost_purple_1.png";
+	all_images[14] = new Image();
+	all_images[14].addEventListener("load", imageLoaded);
+	all_images[14].src = "2D/ghost_green_1.png";
+	all_images[15] = new Image();
+	all_images[15].addEventListener("load", imageLoaded);
+	all_images[15].src = "2D/ghost_purple_1.png";
+	all_images[16] = new Image();
+	all_images[16].addEventListener("load", imageLoaded);
+	all_images[16].src = "2D/ghost_red_1.png";
+	all_images[17] = new Image();
+	all_images[17].addEventListener("load", imageLoaded);
+	all_images[17].src = "2D/ghost_purple_1.png";
+	all_images[18] = new Image();
+	all_images[18].addEventListener("load", imageLoaded);
+	all_images[18].src = "2D/ghost_green_1.png";
+	all_images[19] = new Image();
+	all_images[19].addEventListener("load", imageLoaded);
+	all_images[19].src = "2D/ghost_purple_1.png";
+	all_images[20] = new Image();
+	all_images[20].addEventListener("load", imageLoaded);
+	all_images[20].src = "2D/ghost_red_1.png";
+	all_images[21] = new Image();
+	all_images[21].addEventListener("load", imageLoaded);
+	all_images[21].src = "2D/n_1.png";
+	all_images[22] = new Image();
+	all_images[22].addEventListener("load", imageLoaded);
+	all_images[22].src = "2D/n_2.png";
+	all_images[23] = new Image();
+	all_images[23].addEventListener("load", imageLoaded);
+	all_images[23].src = "2D/n_3.png";
+	all_images[24] = new Image();
+	all_images[24].addEventListener("load", imageLoaded);
+	all_images[24].src = "2D/n_4.png";
+	all_images[25] = new Image();
+	all_images[25].addEventListener("load", imageLoaded);
+	all_images[25].src = "2D/n_5.png";
+	all_images[26] = new Image();
+	all_images[26].addEventListener("load", imageLoaded);
+	all_images[26].src = "2D/n_6.png";
+	all_images[27] = new Image();
+	all_images[27].addEventListener("load", imageLoaded);
+	all_images[27].src = "2D/n_7.png";
+	all_images[28] = new Image();
+	all_images[28].addEventListener("load", imageLoaded);
+	all_images[28].src = "2D/n_8.png";
+	all_images[29] = new Image();
+	all_images[29].addEventListener("load", imageLoaded);
+	all_images[29].src = "2D/n_9.png";
+	all_images[30] = new Image();
+	all_images[30].addEventListener("load", imageLoaded);
+	all_images[30].src = "2D/n_0.png";
+	all_images[31] = new Image();
+	all_images[31].addEventListener("load", imageLoaded);
+	all_images[31].src = "favicon.ico";
+	all_scripts = [];
+	all_scripts[0] = document.createElement("script");
+	all_scripts[0].addEventListener("load", scriptLoaded);
+	all_scripts[0].src = "2D/game.js";
+	document.head.appendChild(all_scripts[0]);
+	all_scripts[1] = document.createElement("script");
+	all_scripts[1].addEventListener("load", scriptLoaded);
+	all_scripts[1].src = "2D/plateau.js";
+	document.head.appendChild(all_scripts[1]);
+	all_scripts[2] = document.createElement("script");
+	all_scripts[2].addEventListener("load", scriptLoaded);
+	all_scripts[2].src = "2D/responsive.js";
+	document.head.appendChild(all_scripts[2]);
+	all_audios = [];
+	all_audios[0] = document.createElement("audio");
+	all_audios[0].preload = "auto";
+	all_audios[0].addEventListener("canplaythrough", audioLoaded);
+	file = document.createElement("source");
+	file.src = "2D/pacman.wav";
+	all_audios[0].appendChild(file);
+	document.body.appendChild(all_audios[0]);
+	clearInterval(loader);
+}
+function lg() {
+		u.style.backgroundImage = "linear-gradient(" + x + "deg, red,blue)";
+		if (x < 360)
+			++x;
+		else
+			x=0;
+}
+function start() {
+	u = document.getElementById("circle");
+	x = 0;
+	setInterval(lg, 1);
+	loader = setInterval(load, 3);
+
+}
+</script>
+</head>
+<body onload="start()">
+	<div class="block">
+		<div class="circle" id="circle"></div>
+		<p>Chargement...</p>
+	</div>
+</body>
+</html>

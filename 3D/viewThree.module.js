@@ -20,7 +20,7 @@ export default class View3D {
         this.xlength = xlength
         this.ylength = ylength
         this.grid = grid
-
+        this.ghosts = []
     }
 
     createRenderer() {
@@ -146,8 +146,8 @@ export default class View3D {
 
     setCameraPosition(  ) {
 
-        let x = getModule().pacman.currentx
-        let y = getModule().pacman.currenty
+        let x = getModule().pacman.currentx * 2
+        let y = getModule().pacman.currenty * 2
         let orientation = getModule().pacman.currentOrientation
         this.camera.position.set(x, 0, y)
         switch(orientation) {
@@ -170,9 +170,14 @@ export default class View3D {
         }
     }
 
+    setGhostPosition(ghostNumber, x, y) {
+        this.ghosts[ghostNumber].position.x = x
+        this.ghosts[ghostNumber].position.z = y
+    }
+
     addCameras() {
 
-        this.camera = new THREE.PerspectiveCamera(-110, this.widthView / this.heightView, 1, 5000 )
+        this.camera = new THREE.PerspectiveCamera(-60, this.widthView / this.heightView, 1, 5000 )
     }
 
     addLights() {
@@ -182,19 +187,59 @@ export default class View3D {
 
     addObjects() {
 
-        	// ghost
-			var loader = new OBJLoader()
-			loader.load("ghost2.obj", (obj) => {
-				obj.position.x = 100
-				obj.position.y = 10
-				obj.position.z = 240
-				obj.rotation.z = Math.PI
-				obj.scale.set( 4.0, 4.0, 4.0 )
-				this.scene.add( obj )
-			}, undefined, function( error ) {
-				console.error( error )
-			})
+        // ghost
+        var loader = new OBJLoader()
+        loader.load("ghost2.obj", (obj) => {
+            this.ghosts[0] = obj
+            obj.position.x = 100
+            obj.position.y = -10
+            obj.position.z = 240
+            obj.rotation.z = Math.PI
+            obj.rotation.x = Math.PI
+            obj.scale.set( 4.0, 4.0, 4.0 )
+            this.scene.add( obj )
+        }, undefined, function( error ) {
+            console.error( error )
+        })
 
+        loader.load("ghost2.obj", (obj) => {
+            this.ghosts[1] = obj
+            obj.position.x = 100
+            obj.position.y = -10
+            obj.position.z = 240
+            obj.rotation.z = Math.PI
+            obj.rotation.x = Math.PI
+            obj.scale.set( 4.0, 4.0, 4.0 )
+            this.scene.add( obj )
+        }, undefined, function( error ) {
+            console.error( error )
+        })
+
+        loader.load("ghost2.obj", (obj) => {
+            this.ghosts[2] = obj
+            obj.position.x = 100
+            obj.position.y = -10
+            obj.position.z = 240
+            obj.rotation.z = Math.PI
+            obj.rotation.x = Math.PI
+            obj.scale.set( 4.0, 4.0, 4.0 )
+            this.scene.add( obj )
+        }, undefined, function( error ) {
+            console.error( error )
+        })
+
+        loader.load("ghost2.obj", (obj) => {
+            this.ghosts[3] = obj
+            obj.position.x = 100
+            obj.position.y = -10
+            obj.position.z = 240
+            obj.rotation.z = Math.PI
+            obj.rotation.x = Math.PI
+            obj.scale.set( 4.0, 4.0, 4.0 )
+            this.scene.add( obj )
+        }, undefined, function( error ) {
+            console.error( error )
+        })
     }
 
     addTextures() {

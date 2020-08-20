@@ -104,7 +104,7 @@ export default class PacMan {
                     nextArea = this.xsize - 1
                 else
                     nextArea = areax - 1
-                if (this.grid[ nextArea + areay * this.xsize ] != 'WALL') {
+                if (this.grid[ nextArea ][areay] != 'WALL') {
                     this.destinationx = nextArea * this.xlength
                     this.canMove = true
                 } else
@@ -115,7 +115,7 @@ export default class PacMan {
                     nextArea = 0
                 else
                     nextArea = areax + 1
-                if (this.grid[ nextArea + areay * this.xsize ] != 'WALL') {
+                if (this.grid[ nextArea  ][areay] != 'WALL') {
                     this.destinationx = nextArea * this.xlength
                     this.canMove = true
                 } else
@@ -126,7 +126,7 @@ export default class PacMan {
                     nextArea = this.ysize - 1
                 else
                     nextArea = areay - 1
-                if (this.grid[ areax + nextArea * this.xsize ] != 'WALL') {
+                if (this.grid[ areax ][nextArea] != 'WALL') {
                     this.destinationy = nextArea * this.ylength
                     this.canMove = true
                 } else
@@ -137,7 +137,7 @@ export default class PacMan {
                     nextArea = 0
                 else
                     nextArea = areay + 1
-                if (this.grid[ areax + nextArea * this.xsize ] != 'WALL') {
+                if (this.grid[ areax ][nextArea] != 'WALL') {
                     this.destinationy = nextArea * this.ylength
                     this.canMove = true
                 } else
@@ -230,7 +230,6 @@ export default class PacMan {
     }
 
     draw(context) {
-        getModule().view.setCameraPosition()
         context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
             this.previousy + this.ylength / 8 - this.step + this.margin.top,
             this.xlength / 1.1 + this.step * 2,
@@ -250,14 +249,14 @@ export default class PacMan {
             areay = (this.currenty - this.currenty % this.ylength) / this.ylength
         else
             areay = (this.currenty + this.ylength - this.currenty % this.ylength) / this.ylength
-        if (this.grid[ areax + areay * this.xsize] == "CAKE") {
+        if (this.grid[ areax ][areay] == "ROAD") {
             let p = new Audio("PacMan.wav")
             p.load()
             var playPromise = p.play()
             if (playPromise !== undefined) {
                 playPromise.then(_ => {}).catch(error => {})
             }
-            this.grid[ areax + areay * this.xsize ] = "EMPTY"
+            this.grid[ areax  ][areay] = "EMPTY"
             getModule().board.redrawBoard()
             let banner = document.getElementById("banner")
             banner.childNodes[2].innerText = getModule().board.cakeCounter;
@@ -310,7 +309,7 @@ export default class PacMan {
 				if (Math.abs(ghost_x - px) <= 5 && Math.abs(ghost_y - py) <= 5)
 					near_ghost = true
 			}
-			is_wall = this.grid[px + py * this.xsize] == "WALL"
+			is_wall = this.grid[px][py] == "WALL"
         } while(near_ghost || is_wall)
         
         context.clearRect(this.currentx + this.xlength / 8 - this.step + this.margin.left,

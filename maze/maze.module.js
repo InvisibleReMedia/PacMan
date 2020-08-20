@@ -1,5 +1,9 @@
 /* copyright @2020 */
 
+function getModule() {
+    return document.getElementById("module")
+}
+
 function isUniquePosition(x, y, p) {
     for(const [i, u] of p.entries()) {
         if (u.x == x && u.y == y)
@@ -53,6 +57,7 @@ export default class Maze {
 
     constructor() {
 
+        getModule().board = this
         this.characters()
 
     }
@@ -363,7 +368,7 @@ export default class Maze {
             "xsize" : size_right - size_left + 1,
             "ysize" : size_bottom - size_top + 1,
             "size_left" : size_left,
-            "size_top" : size_top
+            "size_top" : size_top,
         }
 
     }
@@ -410,6 +415,7 @@ export default class Maze {
         canvas.height = (data.ysize + 2) * yl
         let ctx = canvas.getContext("2d")
 
+        this.cakeCounter = 0
         let { cake, wall } = this.images
         for(let y = 0; y < data.ysize; ++y) {
             for(let x = 0; x < data.xsize; ++x) {
@@ -417,6 +423,7 @@ export default class Maze {
                 if (c == "WALL") {
                     ctx.drawImage(wall, x*xl + 2 + margin.left, y*yl + 2 + margin.top, xl - 5, yl - 5)
                 } else if (c == "ROAD") {
+                    ++this.cakeCounter
                     ctx.drawImage(cake, x*xl + 2 + xl / (4*1.4) + margin.left, y*yl + 2 + yl / (4*1.4) + margin.top, xl / 1.4 - 5, yl / 1.4 - 5)
                 } else if (c == "EMPTY") {
                     ctx.beginPath()
@@ -440,6 +447,8 @@ export default class Maze {
             } ).then( images => {
                 this.images = images
                 this.imageLoaded = true
+                this.canvas = canvas
+                this.data = data
                 this.OnDraw(canvas, data)
             } ).catch( error => console.log(error) );
         } else {
@@ -447,5 +456,9 @@ export default class Maze {
         }
 
 
+    }
+
+    redrawBoard() {
+        this.OnDraw(this.canvas, this.data)
     }
 }
