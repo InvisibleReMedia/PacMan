@@ -2,7 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>Le Pac Man Français</title>
+<title>Pac Man en deux dimensions</title>
+<meta name="description" content="Le jeu pac man en deux dimensions. Utilisez les touches fléchées sur un ordinateur. Compatible avec une tablette tactile"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <script language="javascript" src="../dash/dash.all.min.js"></script>
 <script language="javascript" src="responsive.js"></script>
@@ -86,12 +87,12 @@ var myGameArea = {
 
 </script>
 
-<div class="banner" id="banner"><img style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px" src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div align="right" class="counter" id="counter"></div><br/><div align="right" id="score" style="overflow:hidden"></div>
+<div class="banner" id="banner"><img style="z-index:1;float:left" src="../assets/images/PACMAN_TITLE.png" height="93px" width="70%"/><div style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/><img style="padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/></div><div align="right" class="counter" id="counter"></div><br/><div align="right" id="score" style="overflow:hidden"></div>
 </div>
 <canvas class="game" id="game" ontouchstart="generateKeyDown(event.touches[0].clientX, event.touches[0].clientY);"></canvas>
 <canvas class="board" id="board"></canvas>
-<img src="bravo.gif" class="bravo" id="bravo" style="display:none"/>
-<img src="anim_explode.gif" class="bravo" id="explode" style="display:none"/>
+<img src="../assets/images/Bravo.gif" class="bravo" id="bravo" style="display:none"/>
+<img src="../assets/images/anim_explode.gif" class="bravo" id="explode" style="display:none"/>
 <audio id="music"></audio>
 </body>
 </html>

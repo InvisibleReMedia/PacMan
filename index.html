@@ -2,52 +2,196 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>Choisissez parmi trois versions du jeu</title>
+<title>Chargement</title>
+<meta name="description" content="Chargement du jeu culte pac man"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
-body {
+.circle {
+	height:70px;
+	width:70px;
+	border-radius:50%;
+	border:1px solid red;
+}
+.block {
+	width:70px;
+	height:90px;
 	margin:auto;
-	margin-left:41%;
-	margin-top:300px
 }
-.container {
-	display:flex;
-	flex-direction: row
+p {
+	margin-left:20px;
 }
-.item-game {
-	padding-right:50px
-}
-.item-game:last-child {
-	padding-right:0px
-}
-.img-item {
-	width:50px;
-	height:50px;
-	border-radius: 5px;
-	border: 2px solid blue;
-}
-.text-item {
-	padding-left:14px
+body {
+	position:absolute;
+	top:38%;
+	margin:0;
+	width:100%;
+	height:auto;
 }
 </style>
+<script language="JavaScript">
+function terminateLoad() {
+	if (imageCounter == 33 && scriptCounter == 3 && audioCounter == 1)
+		document.location = "games.html";
+}
+function scriptLoaded() {
+	++scriptCounter;
+	terminateLoad();
+}
+function imageLoaded() {
+	++imageCounter;
+	terminateLoad();
+}
+function audioLoaded() {
+	++audioCounter;
+	terminateLoad();
+}
+function load() {
+	all_images = [];
+	imageCounter = 0;
+	scriptCounter = 0;
+	audioCounter = 0;
+	all_images[0] = new Image();
+	all_images[0].addEventListener("load", imageLoaded);
+	all_images[0].src = "assets/images/pacman1_left.png";
+	all_images[1] = new Image();
+	all_images[1].addEventListener("load", imageLoaded);
+	all_images[1].src = "assets/images/pacman1_right.png";
+	all_images[2] = new Image();
+	all_images[2].addEventListener("load", imageLoaded);
+	all_images[2].src = "assets/images/pacman1_top.png";
+	all_images[3] = new Image();
+	all_images[3].addEventListener("load", imageLoaded);
+	all_images[3].src = "assets/images/pacman1_bottom.png";
+	all_images[4] = new Image();
+	all_images[4].addEventListener("load", imageLoaded);
+	all_images[4].src = "assets/images/pacman2_left.png";
+	all_images[5] = new Image();
+	all_images[5].addEventListener("load", imageLoaded);
+	all_images[5].src = "assets/images/pacman2_right.png";
+	all_images[6] = new Image();
+	all_images[6].addEventListener("load", imageLoaded);
+	all_images[6].src = "assets/images/pacman2_top.png";
+	all_images[7] = new Image();
+	all_images[7].addEventListener("load", imageLoaded);
+	all_images[7].src = "assets/images/pacman2_bottom.png";
+	all_images[8] = new Image();
+	all_images[8].addEventListener("load", imageLoaded);
+	all_images[8].src = "assets/images/PACMAN_TITLE.png";
+	all_images[9] = new Image();
+	all_images[9].addEventListener("load", imageLoaded);
+	all_images[9].src = "assets/images/Bravo.gif";
+	all_images[10] = new Image();
+	all_images[10].addEventListener("load", imageLoaded);
+	all_images[10].src = "assets/images/anim_explode.gif";
+	all_images[11] = new Image();
+	all_images[11].addEventListener("load", imageLoaded);
+	all_images[11].src = "assets/images/cake.png";
+	all_images[12] = new Image();
+	all_images[12].addEventListener("load", imageLoaded);
+	all_images[12].src = "assets/images/star.png";
+	all_images[13] = new Image();
+	all_images[13].addEventListener("load", imageLoaded);
+	all_images[13].src = "assets/images/ghost_purple_1.png";
+	all_images[14] = new Image();
+	all_images[14].addEventListener("load", imageLoaded);
+	all_images[14].src = "assets/images/ghost_green_1.png";
+	all_images[15] = new Image();
+	all_images[15].addEventListener("load", imageLoaded);
+	all_images[15].src = "assets/images/ghost_purple_2.png";
+	all_images[16] = new Image();
+	all_images[16].addEventListener("load", imageLoaded);
+	all_images[16].src = "assets/images/ghost_red_1.png";
+	all_images[17] = new Image();
+	all_images[17].addEventListener("load", imageLoaded);
+	all_images[17].src = "assets/images/ghost_blue_1.png";
+	all_images[18] = new Image();
+	all_images[18].addEventListener("load", imageLoaded);
+	all_images[18].src = "assets/images/ghost_green_2.png";
+	all_images[19] = new Image();
+	all_images[19].addEventListener("load", imageLoaded);
+	all_images[19].src = "assets/images/ghost_blue_2.png";
+	all_images[20] = new Image();
+	all_images[20].addEventListener("load", imageLoaded);
+	all_images[20].src = "assets/images/ghost_red_2.png";
+	all_images[21] = new Image();
+	all_images[21].addEventListener("load", imageLoaded);
+	all_images[21].src = "assets/images/n_1.png";
+	all_images[22] = new Image();
+	all_images[22].addEventListener("load", imageLoaded);
+	all_images[22].src = "assets/images/n_2.png";
+	all_images[23] = new Image();
+	all_images[23].addEventListener("load", imageLoaded);
+	all_images[23].src = "assets/images/n_3.png";
+	all_images[24] = new Image();
+	all_images[24].addEventListener("load", imageLoaded);
+	all_images[24].src = "assets/images/n_4.png";
+	all_images[25] = new Image();
+	all_images[25].addEventListener("load", imageLoaded);
+	all_images[25].src = "assets/images/n_5.png";
+	all_images[26] = new Image();
+	all_images[26].addEventListener("load", imageLoaded);
+	all_images[26].src = "assets/images/n_6.png";
+	all_images[27] = new Image();
+	all_images[27].addEventListener("load", imageLoaded);
+	all_images[27].src = "assets/images/n_7.png";
+	all_images[28] = new Image();
+	all_images[28].addEventListener("load", imageLoaded);
+	all_images[28].src = "assets/images/n_8.png";
+	all_images[29] = new Image();
+	all_images[29].addEventListener("load", imageLoaded);
+	all_images[29].src = "assets/images/n_9.png";
+	all_images[30] = new Image();
+	all_images[30].addEventListener("load", imageLoaded);
+	all_images[30].src = "assets/images/n_0.png";
+	all_images[31] = new Image();
+	all_images[31].addEventListener("load", imageLoaded);
+	all_images[31].src = "favicon.ico";
+	all_images[32] = new Image();
+	all_images[32].addEventListener("load", imageLoaded);
+	all_images[32].src = "assets/images/wheel-spiral-line-monochrome-tire-circle-1190825-pxhere.com.jpg";
+	all_scripts = [];
+	all_scripts[0] = document.createElement("script");
+	all_scripts[0].addEventListener("load", scriptLoaded);
+	all_scripts[0].src = "2D/game.js";
+	document.head.appendChild(all_scripts[0]);
+	all_scripts[1] = document.createElement("script");
+	all_scripts[1].addEventListener("load", scriptLoaded);
+	all_scripts[1].src = "2D/plateau.js";
+	document.head.appendChild(all_scripts[1]);
+	all_scripts[2] = document.createElement("script");
+	all_scripts[2].addEventListener("load", scriptLoaded);
+	all_scripts[2].src = "2D/responsive.js";
+	document.head.appendChild(all_scripts[2]);
+	all_audios = [];
+	all_audios[0] = document.createElement("audio");
+	all_audios[0].preload = "auto";
+	all_audios[0].addEventListener("canplaythrough", audioLoaded);
+	file = document.createElement("source");
+	file.src = "assets/sounds/PacMan.wav";
+	all_audios[0].appendChild(file);
+	document.body.appendChild(all_audios[0]);
+	clearInterval(loader);
+}
+function lg() {
+		u.style.backgroundImage = "linear-gradient(" + x + "deg, red,blue)";
+		if (x < 360)
+			++x;
+		else
+			x=0;
+}
+function start() {
+	u = document.getElementById("circle");
+	x = 0;
+	setInterval(lg, 1);
+	loader = setInterval(load, 3);
+
+}
+</script>
 </head>
-<body>
-	<div class="container">
-		<div class="item-game">
-			<a href="loading.html" title="2D">
-				<img src="2D/pacman2_right.png" class="img-item"/><br/><span class="text-item">2D</span>
-			</a>
-		</div>
-		<div class="item-game">
-			<a href="3D/pacman3D.html" title="3D">
-				<img src="3D.png" class="img-item"/><br/><span class="text-item">3D</span>
-			</a>
-		</div>
-		<div class="item-game">
-			<a href="maze/maze.html" title="Maze">
-				<img src="wheel-spiral-line-monochrome-tire-circle-1190825-pxhere.com.jpg" class="img-item"><br/><span class="text-item">Maze</span>
-			</a>
-		</div>
+<body onload="start()">
+	<div class="block">
+		<div class="circle" id="circle"></div>
+		<p>Patientez...</p>
 	</div>
 </body>
 </html>

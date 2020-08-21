@@ -2,8 +2,9 @@
 <html>
     <head>
         <meta charset="utf-8"/>
+        <title>Pac Man aléatoire</title>
+        <meta name="description" content="Le plateau est créé aléatoirement à chaque jeu. Utilisez les touches fléchées sur un ordinateur. Compatible avec une tablette tactile."/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Maze</title>
         <style>
             .banner {
                 position : absolute;
@@ -46,6 +47,64 @@
             import PacMan from './pacman.module.js'
             import Ghost from './ghost.module.js'
             import Loop from './loop.module.js'
+
+            function generateKeyDown(x,y) {
+                let m = document.getElementById("module")
+                if (m.loop.getStatus() == "running") {
+                    let px = (m.pacman.currentx - m.pacman.currentx % m.pacman.xlength) / m.pacman.xlength;
+                    let py = (m.pacman.currenty - m.pacman.currenty % m.pacman.ylength) / m.pacman.ylength;
+                    let touchx = (x - x % m.pacman.xlength) / m.pacman.xlength;
+                    y = y - (96 - window.scrollY);
+                    let touchy = ((y - y % m.pacman.ylength) / m.pacman.ylength);
+                    let dx = touchx - px;
+                    let dy = touchy - py;
+                    let direction = "none";
+                    if (dy == 0) {
+                        if (dx <= 0)
+                            direction = 'left';
+                        else
+                            direction = 'right';
+                    } else if (dx == 0) {
+                        if (dy <= 0)
+                            direction = 'top';
+                        else
+                            direction = 'bottom';
+                    } else if (dy > 0) {
+                        if (dx > 0)
+                            if (dx >= dy)
+                                direction = 'right';
+                            else
+                                direction = 'bottom';
+                        else
+                            if (-dx >= dy)
+                                direction = 'left';
+                            else
+                                direction = 'bottom';
+                    } else {
+                        if (dx > 0)
+                            if (dx >= -dy)
+                                direction = 'right';
+                            else
+                                direction = 'top';
+                        else
+                            if (-dx >= -dy)
+                                direction = 'left';
+                            else
+                                direction = 'top';
+                    }
+                    let keyCode = 0;
+                    if (direction == 'left') keyCode = 37;
+                    else if (direction == 'right') keyCode = 39;
+                    else if (direction == 'top') keyCode = 38;
+                    else if (direction == 'bottom') keyCode = 40;
+                    if (keyCode > 0) {
+                        var event = new KeyboardEvent('keydown', {
+                            'keyCode' : keyCode
+                        });
+                        window.dispatchEvent(event);
+                    }
+                }
+            }
 
             let m = new Maze()
             let g = m.makeGrid(m.makeMesh({
@@ -103,12 +162,12 @@
         <canvas id="board" class="board"></canvas>
         <canvas id="dom-game" class="game"></canvas>
         <div class="banner" id="banner"><img
-            style="z-index:1;float:left" src="PACMAN_TITLE.png" height="93px" width="70%"/><div
+            style="z-index:1;float:left" src="../assets/images/PACMAN_TITLE.png" height="93px" width="70%"/><div
             style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px"
-            src="pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/><img
-            style="padding-right:5px;width:10px;height:10px" src="pacman2_right.png"/></div><div
+            src="../assets/images/pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/><img
+            style="padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/></div><div
             class="counter" id="counter"></div><br/><div id="score" style="float:right;overflow:hidden;padding-top:20px"></div>
-        <img src="Bravo.gif" class="bravo" id="bravo" style="display:none"/>
+        <img src="../assets/images/Bravo.gif" class="bravo" id="bravo" style="display:none"/>
         <div id="module" style="display:none"/>
     </body>
 </html>

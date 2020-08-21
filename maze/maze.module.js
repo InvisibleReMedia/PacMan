@@ -31,10 +31,10 @@ function loadImages(resolve, reject) {
     }
     wall.addEventListener( "load", setCounter )
     wall.addEventListener( "error", errorLoading ) 
-    wall.src = "wall.png"
+    wall.src = "../assets/images/wall.png"
     cake.addEventListener( "load", setCounter )
     cake.addEventListener( "error", errorLoading )
-    cake.src = "cake.png"
+    cake.src = "../assets/images/cake.png"
 }
 
 function selectCharacter(current, direction) {

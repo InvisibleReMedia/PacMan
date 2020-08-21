@@ -40,7 +40,7 @@ function loadImages(resolve, reject) {
         pacmanImages[x] = new Image()
         pacmanImages[x].addEventListener( "load", setCounter )
         pacmanImages[x].addEventListener( "error", errorLoading ) 
-        pacmanImages[x].src = pacmanSources[x]
+        pacmanImages[x].src = "../assets/images/" + pacmanSources[x]
     }
 }
 
@@ -251,7 +251,7 @@ export default class PacMan {
         else
             areay = (this.currenty + this.ylength - this.currenty % this.ylength) / this.ylength
         if (this.grid[ areax + areay * this.xsize] == "CAKE") {
-            let p = new Audio("PacMan.wav")
+            let p = new Audio("../assets/sounds/PacMan.wav")
             p.load()
             var playPromise = p.play()
             if (playPromise !== undefined) {

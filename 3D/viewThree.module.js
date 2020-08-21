@@ -244,8 +244,8 @@ export default class View3D {
 
     addTextures() {
 
-        this.textureCiel = new THREE.TextureLoader().load( "ciel-bleu.jpg" )
-        this.textureWall = new THREE.TextureLoader().load( "prairie.jpg" )
+        this.textureCiel = new THREE.TextureLoader().load( "../assets/images/ciel-bleu.jpg" )
+        this.textureWall = new THREE.TextureLoader().load( "../assets/images/prairie.jpg" )
 
     }
 

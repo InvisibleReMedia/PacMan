@@ -667,9 +667,11 @@ pacManGame = {
 			}
 			is_wall = x.cells[px + py * x.xsize] == "WALL";
 		} while(near_ghost || is_wall);
-		ctx.clearRect(x.pacman_lastPos_x + x.xl / 8 - x.pacman_move, x.pacman_lastPos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
+		ctx.clearRect(x.pacman_pos_x + x.xl / 8 - x.pacman_move, x.pacman_pos_y + x.yl / 8 - x.pacman_move, x.xl / 1.3 + x.pacman_move * 2, x.yl / 1.3 + x.pacman_move * 2);
 		x.pacman_pos_x = px * x.xl;
 		x.pacman_pos_y = py * x.yl;
+		x.pacman_lastPos_x = x.pacman_pos_x;
+		x.pacman_lastPos_y = x.pacman_pos_y;
 		x.xcell = px;
 		x.ycell = py;
 		x.horizontal_scroll = x.pacman_pos_x - 2 * x.xl;
@@ -870,16 +872,16 @@ pacManGame = {
 }};
 
 function init(level) {
-	gameplay[level].wall.src = "wall.png";
-	gameplay[level].cake.src = "cake.png";
-	pacManGame.pacman1_right.src = "pacman1_right.png";
-	pacManGame.pacman2_right.src = "pacman2_right.png";
-	pacManGame.pacman1_left.src = "pacman1_left.png";
-	pacManGame.pacman2_left.src = "pacman2_left.png";
-	pacManGame.pacman1_top.src = "pacman1_top.png";
-	pacManGame.pacman2_top.src = "pacman2_top.png";
-	pacManGame.pacman1_bottom.src = "pacman1_bottom.png";
-	pacManGame.pacman2_bottom.src = "pacman2_bottom.png";
+	gameplay[level].wall.src = "../assets/images/wall.png";
+	gameplay[level].cake.src = "../assets/images/cake.png";
+	pacManGame.pacman1_right.src = "../assets/images/pacman1_right.png";
+	pacManGame.pacman2_right.src = "../assets/images/pacman2_right.png";
+	pacManGame.pacman1_left.src = "../assets/images/pacman1_left.png";
+	pacManGame.pacman2_left.src = "../assets/images/pacman2_left.png";
+	pacManGame.pacman1_top.src = "../assets/images/pacman1_top.png";
+	pacManGame.pacman2_top.src = "../assets/images/pacman2_top.png";
+	pacManGame.pacman1_bottom.src = "../assets/images/pacman1_bottom.png";
+	pacManGame.pacman2_bottom.src = "../assets/images/pacman2_bottom.png";
 	pacManGame.xsize = gameplay[level].board.x_size;
 	pacManGame.ysize = gameplay[level].board.y_size;
 	pacManGame.xl = gameplay[level].board.x_length;
@@ -889,8 +891,8 @@ function init(level) {
 	pacManGame.pacman_pos_y = 7 * pacManGame.yl;
 
 	for(u = 0; u < pacManGame.ghosts.length; ++u) {
-		pacManGame.ghosts[u].ghost_1.src = "ghost_" + pacManGame.ghosts[u].color + "_1.png";
-		pacManGame.ghosts[u].ghost_2.src = "ghost_" + pacManGame.ghosts[u].color + "_2.png";
+		pacManGame.ghosts[u].ghost_1.src = "../assets/images/ghost_" + pacManGame.ghosts[u].color + "_1.png";
+		pacManGame.ghosts[u].ghost_2.src = "../assets/images/ghost_" + pacManGame.ghosts[u].color + "_2.png";
 		pacManGame.ghosts[u].ghost_pos_x = pacManGame.ghosts[u].ghost_pos_x * pacManGame.xl;
 		pacManGame.ghosts[u].ghost_pos_y = pacManGame.ghosts[u].ghost_pos_y * pacManGame.yl;
 	}
@@ -904,7 +906,7 @@ function numbers(n) {
 	while(t > 0) {
 		m = k % 10;
 		if (t == 1 && m > 0 || t > 1)
-			h = "<img src='n_" + m + ".png'/>" + h;
+			h = "<img src='../assets/images/n_" + m + ".png'/>" + h;
 		k = (k - k % 10) / 10;
 		--t;
 	}

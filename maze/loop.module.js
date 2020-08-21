@@ -12,7 +12,7 @@ function numbers(n) {
 	while(t > 0) {
 		let m = k % 10;
 		if (t == 1 && m > 0 || t > 1)
-			h = "<img style='width:15px;height:15px' src='n_" + m + ".png'/>" + h;
+			h = "<img style='width:15px;height:15px' src='../assets/images/n_" + m + ".png'/>" + h;
 		k = (k - k % 10) / 10;
 		--t;
 	}

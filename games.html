@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Trois versions du jeu Pac Man</title>
+<meta name="description" content="Jouez à cette version du jeu en deux, trois dimensions ou aléatoire."/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+body {
+	position:absolute;
+	top:38%;
+	margin:0;
+	width:100%;
+	height:auto;
+}
+.container {
+	display:flex;
+	flex-direction: row;
+	margin:auto;
+	width:300px;
+	height:100px;
+}
+.item-game {
+	padding-right:50px
+}
+.item-game:last-child {
+	padding-right:0px
+}
+.img-item {
+	width:50px;
+	height:50px;
+	border-radius: 5px;
+	border: 2px solid blue;
+}
+.text-item {
+	padding-left:14px
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="item-game">
+			<a href="2D/pacman.html" title="2D">
+				<img src="assets/images/pacman2_right.png" class="img-item"/><br/><span class="text-item">2D</span>
+			</a>
+		</div>
+		<div class="item-game">
+			<a href="3D/pacman3D.html" title="3D">
+				<img src="assets/images/3D.png" class="img-item"/><br/><span class="text-item">3D</span>
+			</a>
+		</div>
+		<div class="item-game">
+			<a href="maze/maze.html" title="Maze">
+				<img src="assets/images/wheel-spiral-line-monochrome-tire-circle-1190825-pxhere.com.jpg" class="img-item"><br/><span class="text-item">Maze</span>
+			</a>
+		</div>
+	</div>
+</body>
+</html>

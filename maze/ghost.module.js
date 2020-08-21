@@ -23,10 +23,10 @@ function loadImages(color, resolve, reject) {
     }
     left.addEventListener( "load", setCounter )
     left.addEventListener( "error", errorLoading ) 
-    left.src = "ghost_" + color + "_1.png"
+    left.src = "../assets/images/ghost_" + color + "_1.png"
     right.addEventListener( "load", setCounter )
     right.addEventListener( "error", errorLoading )
-    right.src = "ghost_" + color + "_2.png"
+    right.src = "../assets/images/ghost_" + color + "_2.png"
 }
 
 function randomDestination(posx, posy, grid, xsize, ysize, range) {
