@@ -1,6 +1,7 @@
 import * as THREE from './build/three.module.js';
 import { CinematicCamera } from './x/jsm/cameras/CinematicCamera.js';
 import { OBJLoader } from './x/jsm/loaders/OBJLoader.js';
+import { MTLLoader } from './x/jsm/loaders/MTLLoader.js';
 
 function getModule() {
     return document.getElementById("module")
@@ -21,6 +22,7 @@ export default class View3D {
         this.ylength = ylength
         this.grid = grid
         this.ghosts = []
+        this.cakes = new Array(xsize).fill(0).map(x => new Array(ysize).fill(0) )
     }
 
     createRenderer() {
@@ -70,8 +72,8 @@ export default class View3D {
         this.scene.add( object );
 
         // cake
-        let cakeGeometry = new THREE.SphereGeometry( 5, 32, 32 )
-        let cakeMaterial = new THREE.MeshLambertMaterial( { color : 0xffff00 })
+        let cakeGeometry = new THREE.SphereGeometry( 5, 5, 5 )
+        let cakeMaterial = new THREE.MeshLambertMaterial( { color : 0x0000ff })
         let cake
 
         // Bords superieurs
@@ -135,8 +137,11 @@ export default class View3D {
                 } else if (this.grid[x + z * this.xsize] == "CAKE") {
                     cake = new THREE.Mesh( cakeGeometry, cakeMaterial );
                     cake.position.x = x * this.xlength;
-                    cake.position.y = -30;
+                    cake.position.y = -10;
                     cake.position.z = z * this.ylength;
+                    cake.name = `cake${x}-${z}`;
+                    // store each cakes before remove
+                    this.cakes[x][z] = cake;
                     this.scene.add( cake );
                 }
             }
@@ -144,6 +149,13 @@ export default class View3D {
 
     }
 
+    removeCake(x, y) {
+        if (this.cakes[x][y]) {
+            this.scene.remove(this.cakes[x][y])
+            this.cakes[x][y] = null
+        }
+    }
+    
     setCameraPosition(  ) {
 
         let x = getModule().pacman.currentx * 2
@@ -170,14 +182,28 @@ export default class View3D {
         }
     }
 
-    setGhostPosition(ghostNumber, x, y) {
+    setGhostPosition(ghostNumber, x, y, orientation) {
         this.ghosts[ghostNumber].position.x = x
         this.ghosts[ghostNumber].position.z = y
+        switch(orientation) {
+            case 'left':
+                this.ghosts[ghostNumber].rotation.y = Math.PI / 2
+                break
+            case 'right':
+                this.ghosts[ghostNumber].rotation.y = -Math.PI / 2
+                break
+            case 'top':
+                this.ghosts[ghostNumber].rotation.y = 0
+                break
+            case 'bottom':
+                this.ghosts[ghostNumber].rotation.y = -Math.PI
+                break
+        }
     }
 
     addCameras() {
 
-        this.camera = new THREE.PerspectiveCamera(-60, this.widthView / this.heightView, 1, 5000 )
+        this.camera = new THREE.PerspectiveCamera(-110, this.widthView / this.heightView, 1, 5000 )
     }
 
     addLights() {
@@ -188,58 +214,86 @@ export default class View3D {
     addObjects() {
 
         // ghost
-        var loader = new OBJLoader()
-        loader.load("ghost2.obj", (obj) => {
-            this.ghosts[0] = obj
-            obj.position.x = 100
-            obj.position.y = -10
-            obj.position.z = 240
-            obj.rotation.z = Math.PI
-            obj.rotation.x = Math.PI
-            obj.scale.set( 4.0, 4.0, 4.0 )
-            this.scene.add( obj )
-        }, undefined, function( error ) {
-            console.error( error )
+        var mtlLoader = new MTLLoader()
+        mtlLoader.load('ghost2_purple.mtl', m => {
+            m.preload()
+            var loader = new OBJLoader()
+            loader.setMaterials(m)
+            loader.load("ghost2_purple.obj", (obj) => {
+                this.ghosts[0] = obj
+                obj.position.x = 100
+                obj.position.y = -10
+                obj.position.z = 240
+                obj.rotation.z = Math.PI
+                obj.rotation.x = Math.PI
+                obj.scale.set( 4.0, 4.0, 4.0 )
+                this.scene.add( obj )
+            }, undefined, function( error ) {
+                console.error( error )
+            })
+    
         })
 
-        loader.load("ghost2.obj", (obj) => {
-            this.ghosts[1] = obj
-            obj.position.x = 100
-            obj.position.y = -10
-            obj.position.z = 240
-            obj.rotation.z = Math.PI
-            obj.rotation.x = Math.PI
-            obj.scale.set( 4.0, 4.0, 4.0 )
-            this.scene.add( obj )
-        }, undefined, function( error ) {
-            console.error( error )
+        var mtlLoader = new MTLLoader()
+        mtlLoader.load('ghost2_red.mtl', m => {
+            m.preload()
+            var loader = new OBJLoader()
+            loader.setMaterials(m)
+            loader.load("ghost2_red.obj", (obj) => {
+                this.ghosts[1] = obj
+                obj.position.x = 100
+                obj.position.y = -10
+                obj.position.z = 240
+                obj.rotation.z = Math.PI
+                obj.rotation.x = Math.PI
+                obj.scale.set( 4.0, 4.0, 4.0 )
+                this.scene.add( obj )
+            }, undefined, function( error ) {
+                console.error( error )
+            })
+    
         })
 
-        loader.load("ghost2.obj", (obj) => {
-            this.ghosts[2] = obj
-            obj.position.x = 100
-            obj.position.y = -10
-            obj.position.z = 240
-            obj.rotation.z = Math.PI
-            obj.rotation.x = Math.PI
-            obj.scale.set( 4.0, 4.0, 4.0 )
-            this.scene.add( obj )
-        }, undefined, function( error ) {
-            console.error( error )
+        var mtlLoader = new MTLLoader()
+        mtlLoader.load('ghost2_blue.mtl', m => {
+            m.preload()
+            var loader = new OBJLoader()
+            loader.setMaterials(m)
+            loader.load("ghost2_blue.obj", (obj) => {
+                this.ghosts[2] = obj
+                obj.position.x = 100
+                obj.position.y = -10
+                obj.position.z = 240
+                obj.rotation.z = Math.PI
+                obj.rotation.x = Math.PI
+                obj.scale.set( 4.0, 4.0, 4.0 )
+                this.scene.add( obj )
+            }, undefined, function( error ) {
+                console.error( error )
+            })
+    
         })
 
-        loader.load("ghost2.obj", (obj) => {
-            this.ghosts[3] = obj
-            obj.position.x = 100
-            obj.position.y = -10
-            obj.position.z = 240
-            obj.rotation.z = Math.PI
-            obj.rotation.x = Math.PI
-            obj.scale.set( 4.0, 4.0, 4.0 )
-            this.scene.add( obj )
-        }, undefined, function( error ) {
-            console.error( error )
+        var mtlLoader = new MTLLoader()
+        mtlLoader.load('ghost2_green.mtl', m => {
+            m.preload()
+            var loader = new OBJLoader()
+            loader.setMaterials(m)
+            loader.load("ghost2_green.obj", (obj) => {
+                this.ghosts[3] = obj
+                obj.position.x = 100
+                obj.position.y = -10
+                obj.position.z = 240
+                obj.rotation.z = Math.PI
+                obj.rotation.x = Math.PI
+                obj.scale.set( 4.0, 4.0, 4.0 )
+                this.scene.add( obj )
+            }, undefined, function( error ) {
+                console.error( error )
+            })
+    
         })
+
     }
 
     addTextures() {

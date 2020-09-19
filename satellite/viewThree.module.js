@@ -155,23 +155,24 @@ export default class View3D {
 
         let x = getModule().pacman.currentx * 2
         let y = getModule().pacman.currenty * 2
+        if (getModule().pacman.eating)
+            this.pacman = this.pacmanOpen
+        else
+            this.pacman = this.pacmanClose
         this.pacman.position.x = x
         this.pacman.position.z = y
         this.pacman.position.y = 20
-        this.light.position.x = x
-        this.light.position.z = y + 10
-        this.light.position.y = 20
         let orientation = getModule().pacman.currentOrientation
         this.camera.position.set(x, 270, y)
         this.camera.rotation.x = -1.7
         switch(orientation) {
             case 'left':
                 this.camera.rotation.z = (90 / 180) / Math.PI
-                this.pacman.rotation.y = Math.PI / 2
+                this.pacman.rotation.y = -Math.PI / 2
                 break
             case 'right':
                 this.camera.rotation.z = -(90 / 180) / Math.PI
-                this.pacman.rotation.y = -Math.PI / 2
+                this.pacman.rotation.y = Math.PI / 2
                 break
             case 'top':
                 this.camera.rotation.z = (270 / 180) / Math.PI
@@ -181,6 +182,14 @@ export default class View3D {
                 this.camera.rotation.z = -(270 / 180) / Math.PI
                 this.pacman.rotation.y = -Math.PI
                 break
+        }
+        if (getModule().pacman.eating) {
+            this.scene.remove(this.pacmanClose)
+            this.scene.add(this.pacmanOpen)
+        }
+        else {
+            this.scene.remove(this.pacmanOpen)
+            this.scene.add(this.pacmanClose)
         }
     }
 
@@ -205,7 +214,6 @@ export default class View3D {
 
     removeCake(x, y) {
         if (this.cakes[x][y]) {
-            console.log(`x=${x};y=${y}`)
             this.scene.remove(this.cakes[x][y])
             this.cakes[x][y] = null
         }
@@ -217,10 +225,6 @@ export default class View3D {
     }
 
     addLights() {
-
-        this.light = new THREE.PointLight( 0x0000ff, 1, 100 );
-        this.light.position.set( 0, 0, 0 );
-        this.scene.add( this.light );
 
     }
 
@@ -313,14 +317,32 @@ export default class View3D {
             var loader = new OBJLoader()
             loader.setMaterials(m)
             loader.load("pacman.obj", (obj) => {
-                this.pacman = obj
+                this.pacmanClose = obj
                 obj.position.x = 100
                 obj.position.y = 10
                 obj.position.z = 240
                 obj.rotation.z = Math.PI
                 obj.rotation.x = Math.PI
                 obj.scale.set( 4.0, 4.0, 4.0 )
-                this.scene.add( obj )
+            }, undefined, function( error ) {
+                console.error( error )
+            })
+    
+        })
+
+        var mtlLoader = new MTLLoader()
+        mtlLoader.load('pacman2.mtl', m => {
+            m.preload()
+            var loader = new OBJLoader()
+            loader.setMaterials(m)
+            loader.load("pacman2.obj", (obj) => {
+                this.pacmanOpen = obj
+                obj.position.x = 100
+                obj.position.y = 10
+                obj.position.z = 240
+                obj.rotation.z = Math.PI
+                obj.rotation.x = Math.PI
+                obj.scale.set( 4.0, 4.0, 4.0 )
             }, undefined, function( error ) {
                 console.error( error )
             })

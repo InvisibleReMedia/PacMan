@@ -258,6 +258,7 @@ export default class PacMan {
                 playPromise.then(_ => {}).catch(error => {})
             }
             this.grid[ areax + areay * this.xsize ] = "EMPTY"
+            getModule().view.removeCake(areax, areay)
             getModule().board.redrawBoard()
             let banner = document.getElementById("banner")
             banner.childNodes[2].innerText = getModule().board.cakeCounter;

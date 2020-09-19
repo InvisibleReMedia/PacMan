@@ -182,7 +182,7 @@ export default class Ghost {
 
     draw(context) {
 
-        getModule().view.setGhostPosition(this.id, this.currentx * 2, this.currenty * 2)
+        getModule().view.setGhostPosition(this.id, this.currentx * 2, this.currenty * 2, this.currentOrientation)
         context.clearRect(this.previousx + this.xlength / 8 - this.step + this.margin.left,
                           this.previousy + this.xlength / 8 - this.step + this.margin.top,
                           this.xlength / 1.3 + this.step * 2,

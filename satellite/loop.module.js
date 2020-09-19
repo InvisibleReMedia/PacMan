@@ -68,19 +68,6 @@ export default class Loop {
             else if (e.keyCode == 40) {
                 this.pacman.setOrientation("bottom")
             }
-            else if (e.key == 'q') {
-                view.camera.position.y--;
-            } else if (e.key == 'a') {
-                view.camera.position.y++;
-            } else if (e.key == 'b') {
-                view.camera.rotation.z-=0.1;
-            } else if (e.key === 'n') {
-                view.camera.rotation.z+=0.1;
-            } else if (e.key == 'c')
-                view.camera.rotation.x-=0.1;
-            else if (e.key == 'v')
-                view.camera.rotation.x+=0.1;
-            console.log(`y=${view.camera.position.y};rz=${view.camera.rotation.z};rx=${view.camera.rotation.x}`)
             e.preventDefault();
         })
         this.status = "running"
