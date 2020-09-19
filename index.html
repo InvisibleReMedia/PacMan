@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>Chargement</title>
-<meta name="description" content="Chargement du jeu culte pac man"/>
+<title>Pac-Man en ligne gratuit - Chargement en cours</title>
+<meta name="description" content="Pac-Man en ligne gratuit - Chargement du jeu culte qui fête son 40ème anniversaire. Evitez les fantômes qui se déplacent sur le plateau du jeu."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
 .circle {
@@ -18,7 +18,7 @@
 	margin:auto;
 }
 p {
-	margin-left:20px;
+	margin-left:5px;
 }
 body {
 	position:absolute;
@@ -29,6 +29,9 @@ body {
 }
 </style>
 <script language="JavaScript">
+function log(msg) {
+	fetch(`/logger.php?message=${msg}`)
+}
 function terminateLoad() {
 	if (imageCounter == 33 && scriptCounter == 3 && audioCounter == 1)
 		document.location = "games.html";
@@ -180,6 +183,7 @@ function lg() {
 			x=0;
 }
 function start() {
+	log("Loading index.html");
 	u = document.getElementById("circle");
 	x = 0;
 	setInterval(lg, 1);
@@ -189,6 +193,9 @@ function start() {
 </script>
 </head>
 <body onload="start()">
+	<div class="block" style="width:500px">
+		<img width="500px" height="90px" src="pacman-sc.PNG"/>
+	</div>
 	<div class="block">
 		<div class="circle" id="circle"></div>
 		<p>Patientez...</p>

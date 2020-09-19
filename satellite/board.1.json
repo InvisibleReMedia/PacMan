@@ -1,0 +1,36 @@
+{
+    "x_size" : 17,
+    "y_size" : 27,
+    "x_length" : 15,
+    "y_length" : 15,
+    "cells" : [
+        "WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
+        "CAKE", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "CAKE",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL",
+        "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
+        "CAKE", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "WALL", "WALL", "WALL", "CAKE", "WALL", "CAKE", "WALL", "WALL", "WALL", "CAKE", "WALL", "CAKE", "WALL", "WALL", "WALL", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL", "WALL", "WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "WALL", "CAKE", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "CAKE", "WALL",
+        "WALL", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "WALL",
+        "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE",
+        "WALL", "CAKE", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "CAKE", "WALL",
+        "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE",
+        "CAKE", "WALL", "WALL", "CAKE", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "WALL", "CAKE", "WALL", "WALL", "CAKE",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE",
+        "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE", "CAKE", "CAKE", "CAKE", "WALL", "CAKE", "CAKE"
+    ]
+}
+

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Pac Man en trois dimensions</title>
+        <meta name="description" content="Le jeu pac man en trois dimensions. Immersion dans le labyrinthe avec les fantômes. Incompatible avec une tablette tactile"/>
+        <style>
+            .splash {
+                position: absolute;
+                left:0px;
+                top:0px;
+                width:100%;
+                height:100%;
+                z-index:10000;
+                background-color:wheat;
+            }
+            .circle {
+                height:50px;
+                width:50px;
+                border-radius:50%;
+                position:absolute;
+                min-width:auto;
+                max-width:auto;
+                top:50%;
+                margin-left:5px;
+                border:1px solid red;
+            }
+            p {
+                position:absolute;
+                top:56%;
+                text-align:center;
+            }
+            .banner {
+                position : absolute;
+                left : 0px;
+                top : 0px;
+                z-index : 3;
+                border : 1px solid #d3d3d3;
+                background-color : #f1f2f1;
+                opacity : 0.7;
+                display:none;
+            }
+            .board {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                z-index : 1;
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+                display:none;
+            }
+            .game {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                margin-bottom : 0px;
+                z-index : 2;
+                border: 1px solid #d3d3d3;
+            }
+            .counter {
+                position : relative;
+                top : 10px;
+                left : -10px;
+                font-size : 10pt;
+                color : red;
+                float:right;
+            }
+        </style>
+        <script language="JavaScript">
+            function getModule() {
+                return document.getElementById("module")
+            }
+
+            function terminateDisplay() {
+                if (getModule().ready) {
+                    s = document.getElementById("splash");
+                    s.style.display = "none";
+                    banner = document.getElementById("banner");
+                    banner.style.display = "block";
+                    board = document.getElementById("dom-board");
+                    board.style.display = "block";
+                    clearInterval(loader);
+                    clearInterval(b);
+                }
+            }
+
+            function lg() {
+                    u.style.backgroundImage = "linear-gradient(" + x + "deg, red,blue)";
+                    if (x < 360)
+                        ++x;
+                    else
+                        x=0;
+            }
+            function start() {
+                u = document.getElementById("circle");
+                x = 0;
+                b = setInterval(lg, 1);
+                loader = setInterval(terminateDisplay, 100);
+            
+            }
+            </script>
+        </head>
+    <body onload="start()">
+        <script type="module">
+            import PacMan from './pacman.module.js'
+            import Ghost from './ghost.module.js'
+            import Loop from './loop.module.js'
+            import Board from './board.module.js'
+            import View3D from './viewThree.module.js'
+
+            let domBoard = document.getElementById("dom-board")
+            let board = new Board( 1 )
+            board.start().then( _ => {
+                board.Draw( domBoard )
+                let pacman = new PacMan( 17, 27, 15, 15, {
+                    "left" : 0,
+                    "right" : 0,
+                    "top" : 0,
+                    "bottom" : 0
+                }, board.getGrid(), 0, 1, 3 )
+                let ghosts = [ new Ghost(0,
+                    "purple",
+                    17, 27, 15, 15, {
+                        "left" : 0,
+                        "right" : 0,
+                        "top" : 0,
+                        "bottom" : 0
+                    }, board.getGrid(), 1, 5), new Ghost(1,
+                    "red",
+                    17, 27, 15, 15, {
+                        "left" : 0,
+                        "right" : 0,
+                        "top" : 0,
+                        "bottom" : 0
+                    }, board.getGrid(), 1, 5), new Ghost(2,
+                    "blue",
+                    17, 27, 15, 15, {
+                        "left" : 0,
+                        "right" : 0,
+                        "top" : 0,
+                        "bottom" : 0
+                    }, board.getGrid(), 1, 5), new Ghost(3,
+                    "green",
+                    17, 27, 15, 15, {
+                        "left" : 0,
+                        "right" : 0,
+                        "top" : 0,
+                        "bottom" : 0
+                    }, board.getGrid(), 1, 5) ]
+                let domBanner = document.getElementById("banner")
+                let loop = new Loop( pacman, ghosts, 17, 27, 15, 15, {
+                    "left" : 0,
+                    "right" : 0,
+                    "top" : 0,
+                    "bottom" : 0
+                }, domBanner, board )
+                let domGame = document.getElementById("dom-game")
+                domGame.addEventListener("touchstart", function(e) {
+                    generateKeyDown(e.touches[0].clientX, e.touches[0].clientY)
+                }, { "passive" : true } )
+                let view = new View3D(domBoard.offsetLeft + domBoard.offsetWidth, domBoard.offsetTop - domBanner.offsetHeight,
+                    screen.availWidth - 2 * domBanner.offsetWidth,
+                    screen.availHeight - 2 * domBanner.offsetHeight,
+                    17, 27, 30, 30, board.getGrid())
+                view.addCameras()
+                view.addTextures()
+                view.createScene()
+                view.addObjects()
+                view.addLights()
+                view.createRenderer()
+                loop.start(domGame)
+            })
+
+            function generateKeyDown(x,y) {
+                    let m = document.getElementById("module")
+                    if (m.loop.getStatus() == "running") {
+                        let px = (m.pacman.currentx - m.pacman.currentx % m.pacman.xlength) / m.pacman.xlength;
+                        let py = (m.pacman.currenty - m.pacman.currenty % m.pacman.ylength) / m.pacman.ylength;
+                        let touchx = (x - x % m.pacman.xlength) / m.pacman.xlength;
+                        y = y - (96 - window.scrollY);
+                        let touchy = ((y - y % m.pacman.ylength) / m.pacman.ylength);
+                        let dx = touchx - px;
+                        let dy = touchy - py;
+                        let direction = "none";
+                        if (dy == 0) {
+                            if (dx <= 0)
+                                direction = 'left';
+                            else
+                                direction = 'right';
+                        } else if (dx == 0) {
+                            if (dy <= 0)
+                                direction = 'top';
+                            else
+                                direction = 'bottom';
+                        } else if (dy > 0) {
+                            if (dx > 0)
+                                if (dx >= dy)
+                                    direction = 'right';
+                                else
+                                    direction = 'bottom';
+                            else
+                                if (-dx >= dy)
+                                    direction = 'left';
+                                else
+                                    direction = 'bottom';
+                        } else {
+                            if (dx > 0)
+                                if (dx >= -dy)
+                                    direction = 'right';
+                                else
+                                    direction = 'top';
+                            else
+                                if (-dx >= -dy)
+                                    direction = 'left';
+                                else
+                                    direction = 'top';
+                        }
+                        let keyCode = 0;
+                        if (direction == 'left') keyCode = 37;
+                        else if (direction == 'right') keyCode = 39;
+                        else if (direction == 'top') keyCode = 38;
+                        else if (direction == 'bottom') keyCode = 40;
+                        if (keyCode > 0) {
+                            var event = new KeyboardEvent('keydown', {
+                                'keyCode' : keyCode
+                            });
+                            window.dispatchEvent(event);
+                        }
+                    }
+                }
+        </script>
+        <script nomodule>
+            Your browser does not support modules
+        </script>
+        <canvas id="dom-board" class="board"></canvas>
+        <canvas id="dom-game" class="game"></canvas>
+        <div class="banner" id="banner"><img
+            style="z-index:1;float:left" src="../assets/images/PACMAN_TITLE.png" height="93px" width="70%"/><div
+            style="position:relative;top:10px"><img style="padding-left:5px;width:10px;height:10px"
+            src="../assets/images/pacman2_right.png"/><img style="padding-left:5px;padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/><img
+            style="padding-right:5px;width:10px;height:10px" src="../assets/images/pacman2_right.png"/></div><div
+            class="counter" id="counter"></div><br/><div id="score" style="float:right;overflow:hidden;padding-top:20px"></div>
+        <img src="../assets/images/Bravo.gif" class="bravo" id="bravo" style="display:none"/>
+        <div id="module" style="display:none"/>
+        <div id="splash" class="splash">
+            <div class="circle" id="circle"></div>
+            <p>Loading...</p>
+        </div>
+    </body>
+</html>

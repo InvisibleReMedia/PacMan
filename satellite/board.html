@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Board test</title>
+        <style>
+            .board {
+                position : absolute;
+                left : 0px;
+                top : 95px;
+                z-index : 1;
+                border: 1px solid #d3d3d3;
+                background-color: #f1f1f1;
+            }
+        </style>
+    </head>
+    <body>
+        <script type="module">
+            import Board from './board.module.js'
+            let domBoard = document.getElementById("dom-board")
+            let board = new Board(1, domBoard)
+        </script>
+        <script nomodule>
+            Your browser does not support modules
+        </script>
+        <canvas id="dom-board" class="board"></canvas>
+    </body>
+</html>

@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>Trois versions du jeu Pac Man</title>
-<meta name="description" content="Jouez à cette version du jeu en deux, trois dimensions ou aléatoire."/>
+<title>Pac-Man en ligne gratuit - Trois versions du jeu Pac-Man</title>
+<meta name="description" content="Jouez au Pac-Man en ligne gratuit. Le jeu fête son 40ème anniversaire. Jouez à cette version en deux, trois dimensions ou aléatoire. Evitez les fantômes qui se déplacent sur le plateau."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
 body {
@@ -36,21 +36,26 @@ body {
 	padding-left:14px
 }
 </style>
+<script language="JavaScript">
+function log(msg) {
+	fetch(`/logger.php?message=${msg}`)
+}
+</script>
 </head>
-<body>
+<body onload="log('Loading games.html')">
 	<div class="container">
 		<div class="item-game">
-			<a href="2D/pacman.html" title="2D">
+			<a href="2D/pacman.html" title="2D" onclick="log('Click on 2D')">
 				<img src="assets/images/pacman2_right.png" class="img-item"/><br/><span class="text-item">2D</span>
 			</a>
 		</div>
 		<div class="item-game">
-			<a href="3D/pacman3D.html" title="3D">
+			<a href="3D/pacman3D.html" title="3D" onclick="log('Click on 3D')">
 				<img src="assets/images/3D.png" class="img-item"/><br/><span class="text-item">3D</span>
 			</a>
 		</div>
 		<div class="item-game">
-			<a href="maze/maze.html" title="Maze">
+			<a href="maze/maze.html" title="Maze" onclick="log('Click on Maze')">
 				<img src="assets/images/wheel-spiral-line-monochrome-tire-circle-1190825-pxhere.com.jpg" class="img-item"><br/><span class="text-item">Maze</span>
 			</a>
 		</div>

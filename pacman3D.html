@@ -24,9 +24,9 @@ a {
 <body>
 	<script type="module">
 		import * as g from './plateau.module.js';
-		import * as THREE from './build/three.module.js';
-		import { CinematicCamera } from './jsm/cameras/CinematicCamera.js';
-		import { OBJLoader } from './jsm/loaders/OBJLoader.js';
+		import * as THREE from './3D/build/three.module.js';
+		import { CinematicCamera } from './3D/x/jsm/cameras/CinematicCamera.js';
+		import { OBJLoader } from './3D/x/jsm/loaders/OBJLoader.js';
 
 		var camera, scene, raycaster, renderer;
 
@@ -94,7 +94,7 @@ a {
 			object.position.x = xl * xs / 2 - xl / 2;
 			object.position.y = -zsize / 2;
 			object.position.z = yl * ys / 2 - yl / 2;
-			scene.add( object );
+			//scene.add( object );
 
 			// cake
 			var cakeGeometry = new THREE.SphereGeometry( 5, 32, 32 );
@@ -194,6 +194,7 @@ a {
 				else if (e.key == 'v')
 					camera.rotation.x+=0.1;
 				e.preventDefault();
+				console.log(`y=${camera.position.y};rx=${camera.rotation.x};ry=${camera.rotation.y}`)
 			});
 
 			renderer = new THREE.WebGLRenderer( { antialias : true });

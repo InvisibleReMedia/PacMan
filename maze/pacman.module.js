@@ -93,6 +93,10 @@ export default class PacMan {
         this.previousOrientation = this.currentOrientation
         this.currentOrientation = orientation
     }
+
+    getPosition() {
+        return { x : this.currentx, y : this.currenty }
+    }
     
     searchNextDestination() {
         let nextArea
@@ -212,7 +216,6 @@ export default class PacMan {
                     
                 break
         }
-/*      viewport is no more supported
         let viewport = {
             "left" : window.scrollX,
             "right" : (window.scrollX + screen.availWidth) * 3/4,
@@ -226,7 +229,7 @@ export default class PacMan {
             let banner = document.getElementById("banner")
             window.scroll(window.scrollX, this.currenty - 4 * this.ylength)
             banner.style.top = `${window.scrollY}px`
-        }*/
+        }
     }
 
     draw(context) {

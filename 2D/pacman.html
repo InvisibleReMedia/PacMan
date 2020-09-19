@@ -2,8 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8"/>
-<title>Pac Man en deux dimensions</title>
-<meta name="description" content="Le jeu pac man en deux dimensions. Utilisez les touches fléchées sur un ordinateur. Compatible avec une tablette tactile"/>
+<title>Pac Man en ligne gratuit à deux dimensions. Evitez les fantômes qui se déplacent.</title>
+<meta name="description" content="Jouez au Pac-Man en ligne gratuit. Le jeu est à deux dimensions. Utilisez les touches fléchées sur un ordinateur. Compatible avec une tablette tactile. Evitez les fantômes qui se déplacent sur le plateau du jeu. Un morceau de musique composé sur ordinateur est joué en streaming pendant la partie."/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <script language="javascript" src="../dash/dash.all.min.js"></script>
 <script language="javascript" src="responsive.js"></script>
@@ -66,10 +66,16 @@
 <body onload="startGame()">
 <script>
 
+function log(msg) {
+    fetch(`/logger.php?message=${msg}`)
+}
+
 function startGame() {
+    log('Loading 2D game')
     init(0);
     myBoardArea.start();
     myGameArea.start();
+    log('Starting 2D game')
 }
 
 var myBoardArea = {

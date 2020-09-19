@@ -52,6 +52,29 @@ function randomDestination(posx, posy, grid, xsize, ysize, range) {
     }
 }
 
+function PacManDestination(posx, posy, xlength, ylength, grid, xsize, ysize, range) {
+    let destx, desty
+    let gotoPacMan = false
+    if (getModule().pacman) {
+        let diffx = Math.abs(posx * xlength - getModule().pacman.getPosition().x) / xlength
+        let diffy = Math.abs(posy * ylength - getModule().pacman.getPosition().y) / ylength
+        if (diffx < range && diffy < range && (diffx > 0 || diffy > 0)) {
+            let px = getModule().pacman.getPosition().x
+            let py = getModule().pacman.getPosition().y
+            destx = (px - px % xlength) / xlength
+            desty = (py - py % ylength) / ylength
+            if (grid[destx][desty] != "WALL") {
+                gotoPacMan = true
+            }
+        }
+    }
+    return {
+        "gotoPacMan" : gotoPacMan,
+        "destx" : destx,
+        "desty" : desty
+    }
+}
+
 
 export default class Ghost {
 
@@ -76,13 +99,24 @@ export default class Ghost {
             this.range)
         // a ghost starts its turn at the middle of the board
         // objectivex and objectivey are destination based on the lee algorithm
-        let r = randomDestination(
+        let r = PacManDestination(
             u.destx,
             u.desty,
+            this.xlength,
+            this.ylength,
             this.grid,
             this.xsize,
             this.ysize,
             this.range)
+        if (!r.gotoPacMan) {
+            r = randomDestination(
+                u.destx,
+                u.desty,
+                this.grid,
+                this.xsize,
+                this.ysize,
+                this.range)
+        }
         this.objectivex = r.destx
         this.objectivey = r.desty
         this.mesh = this.ia.makeMesh(this.grid, this.xsize, this.ysize, this.objectivex, this.objectivey)
@@ -111,15 +145,27 @@ export default class Ghost {
         let areay = (this.currenty - this.currenty % this.ylength) / this.ylength
 
         let dir = this.ia.test(this.mesh, areax, areay, this.xsize, this.ysize)
-        if (dir == 'end') {
+        // special case with none when it not exists a path
+        if (dir == 'end' || dir == 'none') {
 
-            let r = randomDestination(
+            let r = PacManDestination(
                 areax,
                 areay,
+                this.xlength,
+                this.ylength,
                 this.grid,
                 this.xsize,
                 this.ysize,
                 this.range)
+            if (!r.gotoPacMan) {
+                r = randomDestination(
+                    areax,
+                    areay,
+                    this.grid,
+                    this.xsize,
+                    this.ysize,
+                    this.range)
+            }
             this.objectivex = r.destx
             this.objectivey = r.desty
             this.mesh = this.ia.makeMesh(this.grid, this.xsize, this.ysize, this.objectivex, this.objectivey)
@@ -142,6 +188,9 @@ export default class Ghost {
         this.previousy = this.currenty
 
         switch(this.currentOrientation) {
+            case 'end':
+                // ghost is at destination
+                break
             case 'left':
                 if (Math.abs(this.currentx - this.destinationx) <= this.step) {
                     this.currentx = this.destinationx

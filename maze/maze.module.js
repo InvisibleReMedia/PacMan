@@ -405,11 +405,11 @@ export default class Maze {
 
     OnDraw(canvas, data) {
 
-        let xl = 10
-        let yl = 10
+        let xl = 30
+        let yl = 30
         let margin = {
-            "left" : 10,
-            "top" : 10
+            "left" : 30,
+            "top" : 30
         }
         canvas.width = (data.xsize + 2) * xl
         canvas.height = (data.ysize + 2) * yl

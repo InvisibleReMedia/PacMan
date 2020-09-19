@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Pac Man en trois dimensions</title>
-        <meta name="description" content="Le jeu pac man en trois dimensions. Immersion dans le labyrinthe avec les fantômes. Incompatible avec une tablette tactile"/>
+        <title>Pac-Man en ligne gratuit à trois dimensions avec l'API threejs</title>
+        <meta name="description" content="Jouez au Pac-Man en ligne gratuit. Le jeu fête son 40ème anniversaire. Ce jeu pac man est en trois dimensions avec l'API threejs. Immersion dans le labyrinthe avec les fantômes. Incompatible avec une tablette tactile"/>
         <style>
             .splash {
                 position: absolute;
@@ -68,6 +68,10 @@
             }
         </style>
         <script language="JavaScript">
+            function log(msg) {
+	            fetch(`/logger.php?message=${msg}`)
+            }
+
             function getModule() {
                 return document.getElementById("module")
             }
@@ -93,6 +97,7 @@
                         x=0;
             }
             function start() {
+                log('Loading 3D')
                 u = document.getElementById("circle");
                 x = 0;
                 b = setInterval(lg, 1);
@@ -170,6 +175,7 @@
                 view.addLights()
                 view.createRenderer()
                 loop.start(domGame)
+                log('Starting 3D game')
             })
 
             function generateKeyDown(x,y) {
